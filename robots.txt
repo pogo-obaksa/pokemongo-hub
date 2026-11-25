@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+
+# 오박사의 포켓몬고 허브 — 정적 도구 사이트
+# 배포 후 실제 도메인이 정해지면 아래에 sitemap 주소를 추가하세요.
+# Sitemap: https://example.com/sitemap.xml

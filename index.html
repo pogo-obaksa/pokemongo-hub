@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>오박사의 포켓몬고 허브 | 일정·레이드 카운터·육성 계산기</title>
+<meta name="description" content="포켓몬고 한국 시간 일정 카운트다운, 레이드 보스 약점과 추천 카운터, 별의모래·사탕 육성 계산기, 타입 상성표까지 한 화면에서. 오박사의 포켓몬 백과사전 공식 도구.">
+<meta name="keywords" content="포켓몬고, 포켓몬고 일정, 레이드 카운터, 타입 상성, 별의모래 계산기, 육성 계산기, 테오키스, 메가메타그로스">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#F4F7FA">
+<meta property="og:type" content="website">
+<meta property="og:title" content="오박사의 포켓몬고 허브">
+<meta property="og:description" content="레이드 일정 카운트다운부터 카운터·육성 계산기까지, 포켓몬고 트레이너용 올인원 도구.">
+<meta property="og:site_name" content="오박사의 포켓몬 백과사전">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='%23f5f7ff' stroke='%230b1020' stroke-width='8'/%3E%3Cpath d='M6 50h88' stroke='%230b1020' stroke-width='8'/%3E%3Ccircle cx='50' cy='50' r='14' fill='%230b1020'/%3E%3Ccircle cx='50' cy='50' r='6' fill='%23f5f7ff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">본문으로 건너뛰기</a>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand">
+      <span class="brand-ball" aria-hidden="true"></span>
+      <span class="brand-text">
+        <strong>오박사의 포켓몬 백과사전</strong>
+        <span>포켓몬고 허브 · 한국 시간 기준</span>
+      </span>
+    </div>
+    <div class="header-meta">
+      <span class="clock-chip" id="kst-clock" title="한국 표준시">--:--:-- KST</span>
+      <button class="icon-btn" id="share-btn" type="button" title="링크 복사" aria-label="링크 복사">🔗</button>
+    </div>
+  </div>
+
+  <nav class="tabbar" role="tablist" aria-label="주요 기능">
+    <button class="tab is-active" role="tab" id="tabbtn-events" aria-selected="true" aria-controls="tab-events" data-tab="events">
+      <span class="tab-emoji">📅</span><span>일정</span>
+    </button>
+    <button class="tab" role="tab" id="tabbtn-raids" aria-selected="false" aria-controls="tab-raids" data-tab="raids" tabindex="-1">
+      <span class="tab-emoji">⚔️</span><span>카운터</span>
+    </button>
+    <button class="tab" role="tab" id="tabbtn-powerup" aria-selected="false" aria-controls="tab-powerup" data-tab="powerup" tabindex="-1">
+      <span class="tab-emoji">⚡</span><span>육성</span>
+    </button>
+    <button class="tab" role="tab" id="tabbtn-guide" aria-selected="false" aria-controls="tab-guide" data-tab="guide" tabindex="-1">
+      <span class="tab-emoji">📖</span><span>가이드</span>
+    </button>
+  </nav>
+</header>
+
+<main id="main">
+
+  <!-- ══════════════════ 탭 1 : 일정 ══════════════════ -->
+  <section class="tab-panel is-active" id="tab-events" role="tabpanel" aria-labelledby="tabbtn-events">
+
+    <div class="hero" id="hero-card" aria-live="polite">
+      <div class="hero-main">
+        <div class="hero-label" id="hero-label">지금 가장 가까운 일정</div>
+        <h2 class="hero-title" id="hero-title">일정을 불러오는 중…</h2>
+        <div class="hero-timer" id="hero-timer">--:--:--</div>
+        <div class="hero-sub" id="hero-sub"></div>
+        <div class="hero-bar"><span id="hero-progress"></span></div>
+      </div>
+      <aside class="hero-side" aria-label="다음 일정">
+        <h3 class="hero-side-title">다음 3개 일정</h3>
+        <ul class="hero-next" id="hero-next"></ul>
+      </aside>
+    </div>
+
+    <div class="chip-row" role="group" aria-label="일정 필터">
+      <button class="chip is-active" data-filter="all" type="button">전체</button>
+      <button class="chip" data-filter="raid" type="button">⚔️ 레이드</button>
+      <button class="chip" data-filter="spotlight" type="button">✨ 스포트라이트</button>
+      <button class="chip" data-filter="max" type="button">💥 맥스배틀</button>
+      <button class="chip" data-filter="community" type="button">🎉 커뮤니티</button>
+      <button class="chip" data-filter="event" type="button">🎈 이벤트·시즌</button>
+    </div>
+
+    <div class="ad-slot" aria-hidden="true">
+      <!-- 애드센스 광고 영역 1 : 승인 후 <ins class="adsbygoogle"> 코드를 이 자리에 붙여넣으세요 -->
+      <span>광고 영역</span>
+    </div>
+
+    <h3 class="section-title" id="ongoing-title">진행 중 <span class="count-pill" id="ongoing-count">0</span></h3>
+    <div class="event-list" id="ongoing-list"></div>
+
+    <h3 class="section-title">곧 시작 <span class="count-pill" id="upcoming-count">0</span></h3>
+    <div class="event-list" id="upcoming-list"></div>
+
+    <details class="past-wrap" id="past-wrap" hidden>
+      <summary>지난 일정 <span id="past-count"></span></summary>
+      <div class="event-list is-past" id="past-list"></div>
+    </details>
+
+    <p class="fineprint" id="events-fineprint"></p>
+  </section>
+
+  <!-- ══════════════════ 탭 2 : 카운터 ══════════════════ -->
+  <section class="tab-panel" id="tab-raids" role="tabpanel" aria-labelledby="tabbtn-raids" hidden>
+
+    <h3 class="section-title">레이드 보스 선택</h3>
+    <div class="boss-grid" id="boss-grid" role="group" aria-label="레이드 보스"></div>
+
+    <article class="panel boss-panel" id="boss-panel">
+      <header class="boss-head">
+        <div class="boss-thumb" id="boss-thumb">👾</div>
+        <div>
+          <h3 id="boss-name">보스를 선택하세요</h3>
+          <p class="boss-meta" id="boss-meta"></p>
+        </div>
+      </header>
+
+      <div class="type-row" id="boss-types"></div>
+
+      <div class="boss-note" id="boss-note"></div>
+
+      <div class="weak-block">
+        <h4>약점 (받는 데미지 배율)</h4>
+        <div class="weak-row" id="boss-weak"></div>
+      </div>
+
+      <div class="weather-block">
+        <h4>날씨 부스트</h4>
+        <div class="weather-row" id="boss-weather"></div>
+      </div>
+
+      <h4 class="sub-head">추천 카운터 TOP 6</h4>
+      <div class="counter-list" id="boss-counters"></div>
+      <p class="fineprint" style="margin-top:10px">기술명은 영문 원문을 함께 표시했어요. 게임 내 번역 표기와 조금 다를 수 있고, 업데이트로 기술 위력이 바뀌면 순위도 달라질 수 있습니다.</p>
+
+      <div class="max-tip" id="max-tip" hidden></div>
+    </article>
+
+    <div class="ad-slot" aria-hidden="true">
+      <!-- 애드센스 광고 영역 2 -->
+      <span>광고 영역</span>
+    </div>
+
+    <article class="panel">
+      <h3 class="panel-title">🧮 타입 상성 계산기</h3>
+      <p class="panel-desc">방어 타입을 1~2개 고르면 18개 타입의 배율을 한 번에 계산해요. 복합 타입은 두 배율을 곱해서 2.56배(이중 약점)까지 나옵니다.</p>
+      <div class="calc-form">
+        <label class="field">
+          <span>방어 타입 1</span>
+          <select id="def-type-1"></select>
+        </label>
+        <label class="field">
+          <span>방어 타입 2 (선택)</span>
+          <select id="def-type-2"></select>
+        </label>
+      </div>
+      <div class="calc-result" id="type-result"></div>
+    </article>
+  </section>
+
+  <!-- ══════════════════ 탭 3 : 육성 ══════════════════ -->
+  <section class="tab-panel" id="tab-powerup" role="tabpanel" aria-labelledby="tabbtn-powerup" hidden>
+
+    <article class="panel">
+      <h3 class="panel-title">⚡ 육성 계산기 (별의모래 · 사탕 · XL사탕)</h3>
+      <p class="panel-desc">현재 레벨에서 목표 레벨까지 강화할 때 드는 비용을 실제 게임 공식 테이블로 계산합니다.</p>
+
+      <div class="calc-form">
+        <label class="field">
+          <span>현재 레벨</span>
+          <select id="from-level"></select>
+        </label>
+        <label class="field">
+          <span>목표 레벨</span>
+          <select id="to-level"></select>
+        </label>
+      </div>
+
+      <div class="seg-group" role="group" aria-label="포켓몬 종류">
+        <button class="seg is-active" data-kind="normal" type="button">일반</button>
+        <button class="seg" data-kind="shadow" type="button">그림자 +20%</button>
+        <button class="seg" data-kind="purified" type="button">정화 −10%</button>
+        <button class="seg" data-kind="lucky" type="button">럭키 −50% 모래</button>
+      </div>
+
+      <div class="preset-row" id="preset-row">
+        <button class="preset" data-from="20" data-to="40" type="button">20→40 (레이드 보스)</button>
+        <button class="preset" data-from="25" data-to="40" type="button">25→40</button>
+        <button class="preset" data-from="30" data-to="40" type="button">30→40</button>
+        <button class="preset" data-from="40" data-to="50" type="button">40→50 (XL)</button>
+      </div>
+
+      <div class="cost-cards" id="cost-cards">
+        <div class="cost-card">
+          <span class="cost-icon">✨</span>
+          <span class="cost-label">별의모래</span>
+          <strong class="cost-value" id="cost-dust">0</strong>
+        </div>
+        <div class="cost-card">
+          <span class="cost-icon">🍬</span>
+          <span class="cost-label">사탕</span>
+          <strong class="cost-value" id="cost-candy">0</strong>
+        </div>
+        <div class="cost-card is-xl">
+          <span class="cost-icon">🍬✨</span>
+          <span class="cost-label">XL사탕</span>
+          <strong class="cost-value" id="cost-xl">0</strong>
+        </div>
+      </div>
+
+      <div class="summary-line" id="powerup-summary"></div>
+
+      <details class="detail-wrap">
+        <summary>구간별 비용 자세히 보기</summary>
+        <div id="powerup-breakdown"></div>
+      </details>
+
+      <p class="fineprint">
+        40레벨부터는 사탕 대신 <strong>XL사탕</strong>이 들어갑니다(모래는 계속 소모). 1→40레벨 총비용은 별의모래 270,000 · 사탕 302개,
+        40→50레벨은 별의모래 290,000 · XL사탕 296개가 맞습니다.
+        이로치(반짝반짝)는 육성 비용 할인과 아무 관련이 없고, 할인은 <strong>럭키</strong> 포켓몬(모래 50%)에만 붙어요.
+      </p>
+    </article>
+  </section>
+
+  <!-- ══════════════════ 탭 4 : 가이드 ══════════════════ -->
+  <section class="tab-panel" id="tab-guide" role="tabpanel" aria-labelledby="tabbtn-guide" hidden>
+
+    <article class="panel prose">
+      <h2>포켓몬고 타입 상성표, 이렇게 읽으면 끝</h2>
+      <p>포켓몬고에서 데미지는 크게 <strong>기술 위력 × 타입 상성 배율 × 날씨 부스트 × 공격력/방어력 비율</strong>로 결정됩니다.
+        이 중에서 우리가 직접 조절할 수 있는 게 타입 상성과 날씨예요. 상성 배율은 딱 네 가지 값만 나옵니다.</p>
+      <ul>
+        <li><strong>2.56배</strong> — 복합 타입의 두 약점을 동시에 찌를 때(예: 얼음 기술 → 드래곤·비행 메가망나뇽). 1.6 × 1.6 = 2.56.</li>
+        <li><strong>1.6배</strong> — 효과가 굉장함. 단일 타입 약점을 찌를 때의 기본값.</li>
+        <li><strong>0.625배</strong> — 효과가 별로 없음. 반감되는 타입.</li>
+        <li><strong>0.391배</strong> — 효과가 없음. 원작의 '무효'가 포켓몬고에서는 0.391배로 들어갑니다.</li>
+      </ul>
+      <p>그래서 5성 레이드를 잡을 때 가장 먼저 볼 것이 <strong>"이 보스가 몇 배로 맞는 타입"</strong>입니다.
+        2.56배가 뜨는 보스라면 그 타입 딜러 3~4마리로도 충분하고, 1.6배만 있다면 6마리를 꽉 채워야 시간이 맞아요.</p>
+
+      <h3>레이드 아워 60분, 이렇게 쓰세요</h3>
+      <ol>
+        <li><strong>30분 전</strong> — 체육관 3~4곳을 미리 찍어 두고, 각 체육관의 레이드 시작 시각을 확인합니다.</li>
+        <li><strong>10분 전</strong> — 파티를 미리 짜 둡니다. 6마리 모두 같은 약점 타입으로 채우는 게 핵심이에요.</li>
+        <li><strong>시작과 동시에</strong> — 인원이 가장 많은 체육관부터. 로비 인원이 5명 미만이면 다음 체육관으로 이동하는 게 이득입니다.</li>
+        <li><strong>종료 10분 전</strong> — 남은 무료 패스로 마지막 한 판. 여기서 잡은 포켓몬은 바로 IV를 확인하세요.</li>
+      </ol>
+
+      <div class="ad-slot" aria-hidden="true">
+        <!-- 애드센스 광고 영역 3 : 본문 중간 -->
+        <span>광고 영역</span>
+      </div>
+
+      <h3>반짝반짝(이로치) · 그림자 · 정화, 육성은 뭘로?</h3>
+      <p>세 가지를 자주 헷갈리시는데, 육성 비용과 성능은 완전히 다릅니다.</p>
+      <ul>
+        <li><strong>이로치(반짝반짝)</strong> — 색만 다릅니다. 능력치도 육성 비용도 일반과 똑같아요. 비용 할인은 없습니다.</li>
+        <li><strong>그림자</strong> — 공격력 1.2배, 방어력 0.83배. 육성 비용은 <strong>모래·사탕 모두 20% 더</strong> 듭니다. 레이드 딜러로는 최상급이에요.</li>
+        <li><strong>정화</strong> — 육성 비용이 <strong>10% 할인</strong>되고, 그림자보다 방어가 높아집니다. 대신 공격 보너스는 사라져요.</li>
+        <li><strong>럭키</strong> — 교환으로만 만들 수 있고, 육성 모래가 <strong>50%</strong>로 줄어듭니다(사탕은 그대로). 40→50레벨처럼 모래가 많이 드는 구간에서 특히 이득이에요.</li>
+      </ul>
+
+      <h3>별의모래, 어디서 모으나</h3>
+      <p>하루 1만~2만 모래를 꾸준히 모으는 루트를 추천합니다. ① 매일 첫 포획 + 주간 리워드, ② GO패스 미션 보상,
+        ③ 별의모래가 2배인 이벤트 시간에 별조각을 켜고 잡기, ④ 친구 선물 열기, ⑤ 체육관 방어 보상.
+        특히 <strong>별조각(1.5배) + 날씨 부스트 + 이벤트 2배</strong>가 겹치는 시간에 몰아서 잡으면 하루에 5만도 가능합니다.</p>
+
+      <div class="ad-slot" aria-hidden="true">
+        <!-- 애드센스 광고 영역 4 : 본문 하단 -->
+        <span>광고 영역</span>
+      </div>
+
+      <h3>자주 묻는 질문</h3>
+      <details class="faq">
+        <summary>카운트다운 시간이 제 폰 시계와 달라요</summary>
+        <p>이 페이지는 기기 시간대와 상관없이 <strong>한국 표준시(KST, UTC+9)</strong> 기준으로 계산합니다.
+          해외에 있거나 폰 시간이 자동 설정이 아니라면 차이가 날 수 있어요. 상단 시계가 실제 한국 시간과 맞는지 확인해 보세요.</p>
+      </details>
+      <details class="faq">
+        <summary>레이드 일정은 언제 갱신되나요</summary>
+        <p>해외 공식 공지와 일정 사이트를 대조해 갱신합니다. 마지막 확인일은 일정 탭 하단에 표시돼요.
+          게임 내 공지와 다르면 게임이 우선입니다.</p>
+      </details>
+      <details class="faq">
+        <summary>추천 카운터는 어떻게 고르나요</summary>
+        <p>보스의 약점 타입을 찌르는 기술을 가진 딜러 중에서, 실제 레이드에서 검증된 순위를 기준으로 6마리를 추립니다.
+          같은 타입이라도 기술 조합에 따라 딜이 크게 달라지니 표시된 기술을 그대로 맞춰 주세요.</p>
+      </details>
+      <details class="faq">
+        <summary>다이맥스(맥스배틀)도 같은 계산인가요</summary>
+        <p>아니요. 맥스배틀은 다이맥스 포켓몬의 <strong>맥스무브</strong>로 싸우기 때문에, 일반 레이드 카운터보다
+          '같은 타입 맥스무브를 가진 다이맥스 포켓몬'이 훨씬 중요합니다. 카운터 탭에서 맥스 보스를 고르면 별도 안내가 뜹니다.</p>
+      </details>
+    </article>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-brand">
+    <span class="brand-ball small" aria-hidden="true"></span>
+    <strong>오박사의 포켓몬 백과사전</strong>
+  </div>
+  <p class="footer-desc">포켓몬고 트레이너를 위한 한국어 도구 모음. 매일 확인하고 필요한 계산만 빠르게.</p>
+  <nav class="footer-links" aria-label="정책 및 안내">
+    <button type="button" data-modal="privacy">개인정보처리방침</button>
+    <button type="button" data-modal="terms">이용약관</button>
+    <button type="button" data-modal="contact">문의</button>
+    <button type="button" data-modal="about">소개</button>
+  </nav>
+  <p class="footer-legal">
+    본 사이트는 팬이 만든 비공식 정보 도구입니다. Pokémon 및 Pokémon GO 관련 상표·콘텐츠의 권리는
+    Nintendo · Creatures Inc. · GAME FREAK inc. · Niantic, Inc.에 있으며, 본 사이트는 이들과 제휴하거나 후원받지 않습니다.
+  </p>
+  <p class="footer-legal">© 2026 오박사의 포켓몬 백과사전. 일정·배율 정보는 참고용이며 게임 내 수치가 우선합니다.</p>
+</footer>
+
+<!-- ══════════════════ 정책 모달 ══════════════════ -->
+<div class="modal-backdrop" id="modal-backdrop" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-head">
+      <h2 id="modal-title">개인정보처리방침</h2>
+      <button class="icon-btn" id="modal-close" type="button" aria-label="닫기">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script src="data/types.js"></script>
+<script src="data/events.js"></script>
+<script src="data/raids.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
