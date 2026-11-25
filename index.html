@@ -2,451 +2,72 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<!-- Google tag (gtag.js) — GA4 -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-HXJPTGF30R"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  /* 로컬 파일로 열었을 때(검증 스크립트)는 통계에 섞이지 않도록 전송을 끈다 */
-  if (location.protocol === 'file:') window['ga-disable-G-HXJPTGF30R'] = true;
-  gtag('js', new Date());
-  gtag('config', 'G-HXJPTGF30R');
-</script>
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>오박사의 포켓몬고 허브 | 한글 도감·일정·레이드 카운터·육성 계산기</title>
-<meta name="description" content="포켓몬고 한글 도감(이름·초성·도감번호 검색, 이로치·최대 CP·기술), 한국 시간 일정 카운트다운, 레이드 보스 약점과 추천 카운터, 별의모래·사탕 육성 계산기, 타입 상성표, 초보·복귀용 에버그린 공략 4편까지 한 화면에서.">
-<meta name="keywords" content="포켓몬고 도감, 포켓몬고 한글 도감, 포켓몬고 일정, 레이드 카운터, 타입 상성, 별의모래 계산기, 육성 계산기, 테오키스, 메가메타그로스">
-<meta name="robots" content="index, follow">
-<meta name="theme-color" content="#F4F7FA">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>오박사의 포켓몬고 허브 — 주소가 새로 이사했어요</title>
+<meta name="description" content="오박사의 포켓몬고 허브가 https://pogo-obaksa.github.io/ 로 이사했습니다.">
+<meta name="robots" content="noindex, follow">
 <meta property="og:type" content="website">
-<meta property="og:title" content="오박사의 포켓몬고 허브">
-<meta property="og:description" content="한글 도감 검색부터 레이드 일정 카운트다운·카운터·육성 계산기까지, 포켓몬고 트레이너용 올인원 도구.">
-<meta property="og:site_name" content="오박사의 포켓몬 백과사전">
+<meta property="og:title" content="오박사의 포켓몬고 허브 — 새 주소로 이동합니다">
+<meta property="og:url" content="https://pogo-obaksa.github.io/">
 <meta name="twitter:card" content="summary">
+<link rel="canonical" href="https://pogo-obaksa.github.io/">
+<meta http-equiv="refresh" content="0; url=https://pogo-obaksa.github.io/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='%23f5f7ff' stroke='%230b1020' stroke-width='8'/%3E%3Cpath d='M6 50h88' stroke='%230b1020' stroke-width='8'/%3E%3Ccircle cx='50' cy='50' r='14' fill='%230b1020'/%3E%3Ccircle cx='50' cy='50' r='6' fill='%23f5f7ff'/%3E%3C/svg%3E">
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
-<link rel="stylesheet" href="styles.css">
+<script>
+  /* 쿼리스트링(?guide=…)과 해시(#guide/…)까지 살려서 새 루트 주소로 넘긴다 */
+  (function () {
+    var dest = 'https://pogo-obaksa.github.io/' + window.location.search + window.location.hash;
+    try { window.location.replace(dest); } catch (e) { window.location.href = dest; }
+  })();
+  /* 버튼도 같은 목적지(쿼리·해시 유지)로 */
+  document.addEventListener('DOMContentLoaded', function () {
+    var btn = document.getElementById('go');
+    if (btn) btn.href = 'https://pogo-obaksa.github.io/' + window.location.search + window.location.hash;
+  });
+</script>
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    padding: 24px;
+    font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", system-ui, sans-serif;
+    background: radial-gradient(120% 120% at 50% 0%, #eaf2ff 0%, #f7fafc 55%, #eef7f4 100%);
+    color: #0b1020; -webkit-text-size-adjust: 100%;
+  }
+  .card {
+    width: 100%; max-width: 420px; background: #fff; border: 1px solid #e3e9f2; border-radius: 20px;
+    padding: 28px 24px; text-align: center; box-shadow: 0 12px 32px rgba(15, 40, 90, .08);
+  }
+  .ball {
+    width: 56px; height: 56px; margin: 0 auto 16px; border-radius: 50%;
+    border: 3px solid #0b1020; position: relative; overflow: hidden;
+    background: linear-gradient(#f5f7ff 0 46%, #0b1020 46% 54%, #fdfdff 54% 100%);
+  }
+  .ball::after {
+    content: ""; position: absolute; top: 50%; left: 50%; width: 18px; height: 18px;
+    transform: translate(-50%, -50%); border-radius: 50%; background: #fff; border: 3px solid #0b1020;
+  }
+  h1 { margin: 0 0 8px; font-size: 19px; line-height: 1.4; letter-spacing: -.2px; }
+  p { margin: 0 0 18px; font-size: 14px; line-height: 1.65; color: #47536b; word-break: keep-all; }
+  .addr { display: block; margin: 0 0 20px; font-size: 13px; color: #1f5fd0; font-weight: 700; word-break: break-all; }
+  .btn {
+    display: inline-block; width: 100%; padding: 14px 18px; border-radius: 14px;
+    background: #1f5fd0; color: #fff; text-decoration: none; font-weight: 700; font-size: 15px;
+    box-shadow: 0 8px 18px rgba(31, 95, 208, .22);
+  }
+  .btn:active { transform: translateY(1px); }
+  .note { margin: 14px 0 0; font-size: 12px; color: #7b869c; word-break: keep-all; }
+</style>
 </head>
 <body>
-
-<a class="skip-link" href="#main">본문으로 건너뛰기</a>
-
-<header class="site-header">
-  <div class="header-inner">
-    <div class="brand">
-      <span class="brand-ball" aria-hidden="true"></span>
-      <span class="brand-text">
-        <strong>오박사의 포켓몬 백과사전</strong>
-        <span>포켓몬고 허브 · 한국 시간 기준</span>
-      </span>
-    </div>
-    <div class="header-meta">
-      <span class="clock-chip" id="kst-clock" title="한국 표준시">--:--:-- KST</span>
-      <button class="icon-btn" id="share-btn" type="button" title="링크 복사" aria-label="링크 복사">🔗</button>
-    </div>
-  </div>
-
-  <nav class="tabbar" role="tablist" aria-label="주요 기능">
-    <button class="tab is-active" role="tab" id="tabbtn-events" aria-selected="true" aria-controls="tab-events" data-tab="events">
-      <span class="tab-emoji">📅</span><span>일정</span>
-    </button>
-    <button class="tab" role="tab" id="tabbtn-raids" aria-selected="false" aria-controls="tab-raids" data-tab="raids" tabindex="-1">
-      <span class="tab-emoji">⚔️</span><span>카운터</span>
-    </button>
-    <button class="tab" role="tab" id="tabbtn-pokedex" aria-selected="false" aria-controls="tab-pokedex" data-tab="pokedex" tabindex="-1">
-      <span class="tab-emoji">📘</span><span>도감</span>
-    </button>
-    <button class="tab" role="tab" id="tabbtn-powerup" aria-selected="false" aria-controls="tab-powerup" data-tab="powerup" tabindex="-1">
-      <span class="tab-emoji">⚡</span><span>육성</span>
-    </button>
-    <button class="tab" role="tab" id="tabbtn-guide" aria-selected="false" aria-controls="tab-guide" data-tab="guide" tabindex="-1">
-      <span class="tab-emoji">📖</span><span>가이드</span>
-    </button>
-  </nav>
-</header>
-
-<main id="main">
-
-  <!-- ══════════════════ 탭 1 : 일정 ══════════════════ -->
-  <section class="tab-panel is-active" id="tab-events" role="tabpanel" aria-labelledby="tabbtn-events">
-
-    <div class="hero" id="hero-card" aria-live="polite">
-      <div class="hero-main">
-        <div class="hero-label" id="hero-label">지금 가장 가까운 일정</div>
-        <h2 class="hero-title" id="hero-title">일정을 불러오는 중…</h2>
-        <div class="hero-timer" id="hero-timer">--:--:--</div>
-        <div class="hero-sub" id="hero-sub"></div>
-        <div class="hero-bar"><span id="hero-progress"></span></div>
-      </div>
-      <aside class="hero-side" aria-label="다음 일정">
-        <h3 class="hero-side-title">다음 3개 일정</h3>
-        <ul class="hero-next" id="hero-next"></ul>
-      </aside>
-    </div>
-
-    <div class="chip-row" role="group" aria-label="일정 필터">
-      <button class="chip is-active" data-filter="all" type="button">전체</button>
-      <button class="chip" data-filter="raid" type="button">⚔️ 레이드</button>
-      <button class="chip" data-filter="spotlight" type="button">✨ 스포트라이트</button>
-      <button class="chip" data-filter="max" type="button">💥 맥스배틀</button>
-      <button class="chip" data-filter="community" type="button">🎉 커뮤니티</button>
-      <button class="chip" data-filter="event" type="button">🎈 이벤트·시즌</button>
-    </div>
-
-    <!-- 제휴 배너 1 : 쿠팡 파트너스 -->
-    <div class="promo-slot">
-      <a class="promo promo--coupang" href="https://link.coupang.com/a/iYJYCkpdYW"
-         target="_blank" rel="noopener noreferrer sponsored"
-         data-partner="coupang" data-slot="events-top"
-         aria-label="쿠팡 파트너스 — 포고플 포켓몬고 오토캐치 상품 보기 (새 창)">
-        <span class="promo-mark" aria-hidden="true">쿠팡</span>
-        <span class="promo-main">
-          <span class="promo-eyebrow">포켓몬고 필수템 · 쿠팡</span>
-          <strong class="promo-title">포고플 오토캐치 — 자동 충전식 · 배터리 교체형</strong>
-          <span class="promo-desc">켜 두면 알아서 몬스터볼을 던집니다.</span>
-        </span>
-        <span class="promo-cta">쿠팡에서 보기<span class="promo-arrow" aria-hidden="true">→</span></span>
-      </a>
-      <p class="promo-note">이 배너는 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>
-    </div>
-
-    <h3 class="section-title" id="ongoing-title">진행 중 <span class="count-pill" id="ongoing-count">0</span></h3>
-    <div class="event-list" id="ongoing-list"></div>
-
-    <h3 class="section-title">곧 시작 <span class="count-pill" id="upcoming-count">0</span></h3>
-    <div class="event-list" id="upcoming-list"></div>
-
-    <details class="past-wrap" id="past-wrap" hidden>
-      <summary>지난 일정 <span id="past-count"></span></summary>
-      <div class="event-list is-past" id="past-list"></div>
-    </details>
-
-    <p class="fineprint" id="events-fineprint"></p>
-  </section>
-
-  <!-- ══════════════════ 탭 2 : 카운터 ══════════════════ -->
-  <section class="tab-panel" id="tab-raids" role="tabpanel" aria-labelledby="tabbtn-raids" hidden>
-
-    <h3 class="section-title">레이드 보스 선택</h3>
-    <div class="boss-grid" id="boss-grid" role="group" aria-label="레이드 보스"></div>
-
-    <article class="panel boss-panel" id="boss-panel">
-      <header class="boss-head">
-        <div class="boss-thumb" id="boss-thumb">👾</div>
-        <div>
-          <h3 id="boss-name">보스를 선택하세요</h3>
-          <p class="boss-meta" id="boss-meta"></p>
-        </div>
-      </header>
-
-      <div class="type-row" id="boss-types"></div>
-
-      <div class="boss-note" id="boss-note"></div>
-
-      <div class="weak-block">
-        <h4>약점 (받는 데미지 배율)</h4>
-        <div class="weak-row" id="boss-weak"></div>
-      </div>
-
-      <div class="weather-block">
-        <h4>날씨 부스트</h4>
-        <div class="weather-row" id="boss-weather"></div>
-      </div>
-
-      <h4 class="sub-head">추천 카운터 TOP 6</h4>
-      <div class="counter-list" id="boss-counters"></div>
-      <p class="fineprint" style="margin-top:10px">기술명은 영문 원문을 함께 표시했어요. 게임 내 번역 표기와 조금 다를 수 있고, 업데이트로 기술 위력이 바뀌면 순위도 달라질 수 있습니다.</p>
-
-      <div class="max-tip" id="max-tip" hidden></div>
-    </article>
-
-    <!-- 제휴 배너 2 : 겜스고 -->
-    <div class="promo-slot">
-      <a class="promo promo--gamsgo" href="https://www.gamsgo.com/partner/cYpzj"
-         target="_blank" rel="noopener noreferrer sponsored"
-         data-partner="gamsgo" data-slot="raids-bottom"
-         aria-label="겜스고 — 포켓몬고 포켓코인 충전 보기 (새 창)">
-        <span class="promo-mark" aria-hidden="true">겜스고</span>
-        <span class="promo-main">
-          <span class="promo-eyebrow">포켓코인 충전 · 겜스고</span>
-          <strong class="promo-title">포켓코인·레이드패스, 정가보다 최대 60% 저렴</strong>
-          <span class="promo-desc">550+50부터 87,000+6,000 포켓코인까지, 계정으로 바로 충전합니다.</span>
-        </span>
-        <span class="promo-cta">겜스고에서 보기<span class="promo-arrow" aria-hidden="true">→</span></span>
-      </a>
-      <p class="promo-note">겜스고 제휴 링크입니다. 이 링크를 거쳐 구매하면 일정액의 수수료를 받을 수 있습니다.</p>
-    </div>
-
-    <article class="panel">
-      <h3 class="panel-title">🧮 타입 상성 계산기</h3>
-      <p class="panel-desc">방어 타입을 1~2개 고르면 18개 타입의 배율을 한 번에 계산해요. 복합 타입은 두 배율을 곱해서 2.56배(이중 약점)까지 나옵니다.</p>
-      <div class="calc-form">
-        <label class="field">
-          <span>방어 타입 1</span>
-          <select id="def-type-1"></select>
-        </label>
-        <label class="field">
-          <span>방어 타입 2 (선택)</span>
-          <select id="def-type-2"></select>
-        </label>
-      </div>
-      <div class="calc-result" id="type-result"></div>
-    </article>
-  </section>
-
-  <!-- ══════════════════ 탭 3 : 도감 ══════════════════ -->
-  <section class="tab-panel" id="tab-pokedex" role="tabpanel" aria-labelledby="tabbtn-pokedex" hidden>
-
-    <div class="dex-search">
-      <div class="dex-search-field">
-        <span class="dex-search-icon" aria-hidden="true">🔍</span>
-        <input type="search" id="dex-q" class="dex-input" autocomplete="off" spellcheck="false"
-               placeholder="이름 · 초성 · 도감번호 (리자몽, ㄹㅈㅁ, 149)" aria-label="포켓몬 검색">
-        <button class="dex-clear" id="dex-clear" type="button" aria-label="검색어 지우기" hidden>✕</button>
-      </div>
-      <div class="dex-tools">
-        <button class="chip dex-shiny-chip" id="dex-shiny-only" type="button" aria-pressed="false">✨ 이로치만</button>
-        <span class="dex-count" id="dex-count"></span>
-      </div>
-    </div>
-
-    <div class="chip-row dex-type-row" id="dex-type-row" role="group" aria-label="타입 필터"></div>
-
-    <div class="dex-grid" id="dex-grid"></div>
-    <p class="dex-empty" id="dex-empty" hidden>조건에 맞는 포켓몬이 없어요. 이름·초성·도감번호로 다시 검색해 보세요.</p>
-    <div class="dex-more-wrap"><button class="dex-more" id="dex-more" type="button" hidden>더 보기</button></div>
-
-    <p class="fineprint">
-      종족값·기술·파트너 거리·진화 사탕은 pogoapi.net, 한국어 이름과 기술명은 PokeAPI 기준입니다.
-      최대 CP는 개체값 15/15/15 기준(50레벨 CPM 0.84029999)이고, 게임 업데이트로 수치가 바뀌면 게임 내 값이 우선합니다.
-      ⓔ 표시는 엘리트 기술(기술머신·이벤트 한정)입니다.
-    </p>
-  </section>
-
-  <!-- ══════════════════ 탭 4 : 육성 ══════════════════ -->
-  <section class="tab-panel" id="tab-powerup" role="tabpanel" aria-labelledby="tabbtn-powerup" hidden>
-
-    <article class="panel">
-      <h3 class="panel-title">⚡ 육성 계산기 (별의모래 · 사탕 · XL사탕)</h3>
-      <p class="panel-desc">현재 레벨에서 목표 레벨까지 강화할 때 드는 비용을 실제 게임 공식 테이블로 계산합니다.</p>
-
-      <div class="calc-form">
-        <label class="field">
-          <span>현재 레벨</span>
-          <select id="from-level"></select>
-        </label>
-        <label class="field">
-          <span>목표 레벨</span>
-          <select id="to-level"></select>
-        </label>
-      </div>
-
-      <div class="seg-group" role="group" aria-label="포켓몬 종류">
-        <button class="seg is-active" data-kind="normal" type="button">일반</button>
-        <button class="seg" data-kind="shadow" type="button">그림자 +20%</button>
-        <button class="seg" data-kind="purified" type="button">정화 −10%</button>
-        <button class="seg" data-kind="lucky" type="button">럭키 −50% 모래</button>
-      </div>
-
-      <div class="preset-row" id="preset-row">
-        <button class="preset" data-from="20" data-to="40" type="button">20→40 (레이드 보스)</button>
-        <button class="preset" data-from="25" data-to="40" type="button">25→40</button>
-        <button class="preset" data-from="30" data-to="40" type="button">30→40</button>
-        <button class="preset" data-from="40" data-to="50" type="button">40→50 (XL)</button>
-      </div>
-
-      <div class="cost-cards" id="cost-cards">
-        <div class="cost-card">
-          <span class="cost-icon">✨</span>
-          <span class="cost-label">별의모래</span>
-          <strong class="cost-value" id="cost-dust">0</strong>
-        </div>
-        <div class="cost-card">
-          <span class="cost-icon">🍬</span>
-          <span class="cost-label">사탕</span>
-          <strong class="cost-value" id="cost-candy">0</strong>
-        </div>
-        <div class="cost-card is-xl">
-          <span class="cost-icon">🍬✨</span>
-          <span class="cost-label">XL사탕</span>
-          <strong class="cost-value" id="cost-xl">0</strong>
-        </div>
-      </div>
-
-      <div class="summary-line" id="powerup-summary"></div>
-
-      <details class="detail-wrap">
-        <summary>구간별 비용 자세히 보기</summary>
-        <div id="powerup-breakdown"></div>
-      </details>
-
-      <p class="fineprint">
-        40레벨부터는 사탕 대신 <strong>XL사탕</strong>이 들어갑니다(모래는 계속 소모). 1→40레벨 총비용은 별의모래 270,000 · 사탕 304개,
-        40→50레벨은 별의모래 250,000 · XL사탕 296개가 맞습니다.
-        이로치(반짝반짝)는 육성 비용 할인과 아무 관련이 없고, 할인은 <strong>럭키</strong> 포켓몬(모래 50%)에만 붙어요.
-      </p>
-    </article>
-  </section>
-
-  <!-- ══════════════════ 탭 5 : 가이드 ══════════════════ -->
-  <section class="tab-panel" id="tab-guide" role="tabpanel" aria-labelledby="tabbtn-guide" hidden>
-
-    <div id="guide-index">
-      <header class="guide-hero">
-        <p class="guide-eyebrow">EVERGREEN GUIDE</p>
-        <h2>포켓몬고 공략, 한 편씩 골라 읽기</h2>
-        <p class="guide-lead">
-          처음 시작했거나 오랜만에 복귀했다면 여기서부터. 재화·그림자·메가진화·교환까지,
-          헷갈리기 쉬운 시스템을 표와 체크리스트로 정리했어.
-        </p>
-        <div class="guide-chips">
-          <span class="guide-chip">📚 4편</span>
-          <span class="guide-chip">🕒 편당 8~9분</span>
-          <span class="guide-chip is-soft">2026.11 기준</span>
-        </div>
-      </header>
-
-      <div class="guide-grid" id="guide-list" aria-label="가이드 목록"></div>
-
-      <div id="guide-mid-home">
-        <!-- 제휴 배너 3 : 쿠팡 파트너스 -->
-        <div class="promo-slot" id="promo-guide-mid">
-          <a class="promo promo--coupang" href="https://link.coupang.com/a/iYJYCkpdYW"
-             target="_blank" rel="noopener noreferrer sponsored"
-             data-partner="coupang" data-slot="guide-mid"
-             aria-label="쿠팡 파트너스 — 포고플 포켓몬고 오토캐치 상품 보기 (새 창)">
-            <span class="promo-mark" aria-hidden="true">쿠팡</span>
-            <span class="promo-main">
-              <span class="promo-eyebrow">포켓몬고 필수템 · 쿠팡</span>
-              <strong class="promo-title">커뮤니티데이 3시간, 손가락 대신 포고플</strong>
-              <span class="promo-desc">몬스터볼·사탕을 자동으로 모아 줍니다.</span>
-            </span>
-            <span class="promo-cta">쿠팡에서 보기<span class="promo-arrow" aria-hidden="true">→</span></span>
-          </a>
-          <p class="promo-note">이 배너는 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>
-        </div>
-      </div>
-
-      <section class="panel guide-extra" aria-labelledby="guide-basics-title">
-        <h2 class="panel-title" id="guide-basics-title">허브 기본기 — 타입 상성표 읽는 법</h2>
-        <p class="panel-desc">
-          포켓몬고 데미지는 <strong>기술 위력 × 타입 상성 × 날씨 부스트 × 공격력/방어력 비율</strong>로 정해져.
-          이 중에서 내가 직접 고를 수 있는 게 타입 상성이야. 배율은 딱 네 값만 나와.
-        </p>
-        <ul class="guide-mult">
-          <li><strong>2.56배</strong> — 복합 타입의 약점 두 개를 동시에 찌를 때(1.6 × 1.6). 예: 얼음 기술 → 드래곤·비행.</li>
-          <li><strong>1.6배</strong> — 효과가 굉장함. 단일 약점을 찌를 때의 기본값.</li>
-          <li><strong>0.625배</strong> — 효과가 별로 없음. 반감되는 타입.</li>
-          <li><strong>0.391배</strong> — 효과가 없음. 원작의 '무효'가 포켓몬고에서는 0.391배로 들어와.</li>
-        </ul>
-        <p>
-          그래서 레이드에서 가장 먼저 볼 것은 <strong>"이 보스가 몇 배로 맞는 타입인지"</strong>야.
-          2.56배가 뜨는 보스는 그 타입 딜러 3~4마리로도 충분하고, 1.6배만 있으면 6마리를 꽉 채우는 게 안정적이야.
-          카운터 탭에서 보스를 고르면 약점과 추천 카운터가 한 번에 나와.
-        </p>
-
-        <h3>자주 묻는 질문</h3>
-        <details class="faq">
-          <summary>카운트다운 시간이 내 폰 시계와 달라요</summary>
-          <p>이 페이지는 기기 시간대와 상관없이 <strong>한국 표준시(KST, UTC+9)</strong> 기준으로 계산해.
-            해외에 있거나 폰 시간이 자동 설정이 아니라면 차이가 날 수 있어. 상단 시계가 실제 한국 시간과 맞는지 확인해 봐.</p>
-        </details>
-        <details class="faq">
-          <summary>레이드 일정은 언제 갱신되나요</summary>
-          <p>해외 공식 공지와 일정 사이트를 대조해 갱신해. 마지막 확인일은 일정 탭 하단에 표시돼.
-            게임 내 공지와 다르면 게임이 우선이야.</p>
-        </details>
-        <details class="faq">
-          <summary>추천 카운터는 어떻게 고르나요</summary>
-          <p>보스의 약점 타입을 찌르는 기술을 가진 딜러 중에서, 실제 레이드에서 검증된 순위를 기준으로 6마리를 추려.
-            같은 타입이라도 기술 조합에 따라 딜이 크게 달라지니 표시된 기술을 그대로 맞춰 줘.</p>
-        </details>
-        <details class="faq">
-          <summary>다이맥스(맥스배틀)도 같은 계산인가요</summary>
-          <p>아니야. 맥스배틀은 다이맥스 포켓몬의 <strong>맥스무브</strong>로 싸우기 때문에, 일반 레이드 카운터보다
-            '같은 타입 맥스무브를 가진 다이맥스 포켓몬'이 훨씬 중요해. 카운터 탭에서 맥스 보스를 고르면 별도 안내가 떠.</p>
-        </details>
-      </section>
-
-      <div id="guide-bottom-home">
-        <!-- 제휴 배너 4 : 겜스고 -->
-        <div class="promo-slot" id="promo-guide-bottom">
-          <a class="promo promo--gamsgo" href="https://www.gamsgo.com/partner/cYpzj"
-             target="_blank" rel="noopener noreferrer sponsored"
-             data-partner="gamsgo" data-slot="guide-bottom"
-             aria-label="겜스고 — 포켓몬고 포켓코인 충전 보기 (새 창)">
-            <span class="promo-mark" aria-hidden="true">겜스고</span>
-            <span class="promo-main">
-              <span class="promo-eyebrow">포켓코인 충전 · 겜스고</span>
-              <strong class="promo-title">레이드패스·GO패스도 겜스고에서</strong>
-              <span class="promo-desc">포켓코인부터 리모트 레이드패스까지 한곳에서, 계정 직접 충전.</span>
-            </span>
-            <span class="promo-cta">겜스고에서 보기<span class="promo-arrow" aria-hidden="true">→</span></span>
-          </a>
-          <p class="promo-note">겜스고 제휴 링크입니다. 이 링크를 거쳐 구매하면 일정액의 수수료를 받을 수 있습니다.</p>
-        </div>
-      </div>
-    </div>
-
-    <article class="panel prose guide-article" id="guide-article" hidden tabindex="-1"></article>
-  </section>
-
-</main>
-
-<footer class="site-footer">
-  <div class="footer-brand">
-    <span class="brand-ball small" aria-hidden="true"></span>
-    <strong>오박사의 포켓몬 백과사전</strong>
-  </div>
-  <p class="footer-desc">포켓몬고 트레이너를 위한 한국어 도구 모음. 매일 확인하고 필요한 계산만 빠르게.</p>
-  <nav class="footer-links" aria-label="정책 및 안내">
-    <button type="button" data-modal="privacy">개인정보처리방침</button>
-    <button type="button" data-modal="terms">이용약관</button>
-    <button type="button" data-modal="contact">문의</button>
-    <button type="button" data-modal="disclaimer">면책조항</button>
-    <button type="button" data-modal="about">소개</button>
-  </nav>
-  <p class="footer-legal">
-    본 사이트는 팬이 만든 비공식 정보 도구입니다. Pokémon 및 Pokémon GO 관련 상표·콘텐츠의 권리는
-    Nintendo · Creatures Inc. · GAME FREAK inc. · Niantic, Inc.에 있으며, 본 사이트는 이들과 제휴하거나 후원받지 않습니다.
-  </p>
-  <p class="footer-legal">© 2026 오박사의 포켓몬 백과사전. 일정·배율 정보는 참고용이며 게임 내 수치가 우선합니다.</p>
-</footer>
-
-<!-- ══════════════════ 도감 상세 시트 ══════════════════ -->
-<div class="dex-backdrop" id="dex-backdrop" hidden>
-  <div class="dex-sheet" role="dialog" aria-modal="true" aria-labelledby="dex-sheet-name">
-    <header class="dex-sheet-head">
-      <button class="icon-btn dex-nav" id="dex-prev" type="button" aria-label="이전 도감번호">‹</button>
-      <div class="dex-sheet-title">
-        <span class="dex-sheet-no" id="dex-sheet-no">#000</span>
-        <h2 id="dex-sheet-name">포켓몬</h2>
-        <span class="dex-sheet-en" id="dex-sheet-en"></span>
-      </div>
-      <button class="icon-btn dex-nav" id="dex-next" type="button" aria-label="다음 도감번호">›</button>
-      <button class="icon-btn" id="dex-close" type="button" aria-label="닫기">✕</button>
-    </header>
-    <div class="dex-sheet-body" id="dex-sheet-body"></div>
-  </div>
-</div>
-
-<!-- ══════════════════ 정책 모달 ══════════════════ -->
-<div class="modal-backdrop" id="modal-backdrop" hidden>
-  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-    <div class="modal-head">
-      <h2 id="modal-title">개인정보처리방침</h2>
-      <button class="icon-btn" id="modal-close" type="button" aria-label="닫기">✕</button>
-    </div>
-    <div class="modal-body" id="modal-body"></div>
-  </div>
-</div>
-
-<script src="data/types.js"></script>
-<script src="data/events.js"></script>
-<script src="data/raids.js"></script>
-<script src="data/pokedex.js"></script>
-<script src="data/guides.js"></script>
-<script src="app.js"></script>
+  <main class="card">
+    <div class="ball" aria-hidden="true"></div>
+    <h1>주소가 새로 이사했어요</h1>
+    <p>오박사의 포켓몬고 허브는 이제 <strong>새 루트 주소</strong>에서 열립니다.<br>잠시 후 자동으로 이동합니다.</p>
+    <a class="addr" href="https://pogo-obaksa.github.io/">https://pogo-obaksa.github.io/</a>
+    <a class="btn" href="https://pogo-obaksa.github.io/" id="go">오박사의 포켓몬고 허브로 이동하기 →</a>
+    <p class="note">자동으로 넘어가지 않으면 위 버튼을 눌러 주세요.<br>예전에 공유된 가이드 링크도 같은 글로 연결됩니다.</p>
+  </main>
 </body>
 </html>
