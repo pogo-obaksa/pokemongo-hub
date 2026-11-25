@@ -616,6 +616,7 @@
       var last = rows[rows.length - 1];
       if (last && last.dust === c.dust && last.candy === c.candy && last.xl === c.xl) {
         last.to = lv + 0.5;
+        last.steps += 1;
       } else {
         rows.push({ from: lv, to: lv + 0.5, dust: c.dust, candy: c.candy, xl: c.xl, steps: 1 });
       }
@@ -697,10 +698,11 @@
     $('#powerup-summary').innerHTML = line;
 
     var rows = res.rows.map(function (r) {
+      /* 같은 비용이 반복된 구간은 steps 만큼 곱해서 구간 합계를 보여준다 */
       return '<tr><td>' + levelLabel(r.from) + ' → ' + levelLabel(r.to) + '</td>' +
-        '<td>' + num(Math.round(r.dust * m.dust)) + '</td>' +
-        '<td>' + num(Math.round(r.candy * m.candy)) + '</td>' +
-        '<td>' + num(Math.round(r.xl * m.candy)) + '</td></tr>';
+        '<td>' + num(Math.round(r.dust * r.steps * m.dust)) + '</td>' +
+        '<td>' + num(Math.round(r.candy * r.steps * m.candy)) + '</td>' +
+        '<td>' + num(Math.round(r.xl * r.steps * m.candy)) + '</td></tr>';
     }).join('');
     $('#powerup-breakdown').innerHTML =
       '<table><thead><tr><th>구간</th><th>모래</th><th>사탕</th><th>XL</th></tr></thead><tbody>' + rows + '</tbody></table>';
