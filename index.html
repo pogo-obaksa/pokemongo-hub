@@ -2,6 +2,16 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
+<!-- Google tag (gtag.js) — GA4 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-HXJPTGF30R"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  /* 로컬 파일로 열었을 때(검증 스크립트)는 통계에 섞이지 않도록 전송을 끈다 */
+  if (location.protocol === 'file:') window['ga-disable-G-HXJPTGF30R'] = true;
+  gtag('js', new Date());
+  gtag('config', 'G-HXJPTGF30R');
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>오박사의 포켓몬고 허브 | 한글 도감·일정·레이드 카운터·육성 계산기</title>
 <meta name="description" content="포켓몬고 한글 도감(이름·초성·도감번호 검색, 이로치·최대 CP·기술), 한국 시간 일정 카운트다운, 레이드 보스 약점과 추천 카운터, 별의모래·사탕 육성 계산기, 타입 상성표까지 한 화면에서.">

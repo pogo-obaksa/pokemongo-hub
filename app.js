@@ -19,6 +19,14 @@
   var num = function (n) { return Number(n || 0).toLocaleString('ko-KR'); };
   var DAY = 86400000;
 
+  /* ─────────────── GA4 이벤트 ───────────────
+     gtag.js가 없거나(오프라인·광고차단) 로드에 실패해도 절대 에러가 나지 않게 감싼다. */
+  function track(name, params) {
+    try {
+      if (typeof window.gtag === 'function') window.gtag('event', name, params || {});
+    } catch (e) { /* 통계는 실패해도 화면은 그대로 둔다 */ }
+  }
+
   /* ─────────────── 시간 유틸 (전부 KST 고정) ─────────────── */
   var KST_OFFSET = 9 * 60 * 60 * 1000;
 
@@ -103,6 +111,7 @@
     });
     if (!opts || !opts.silent) {
       if (history.replaceState) history.replaceState(null, '', '#' + name);
+      track('tab_switch', { tab_name: name });
     }
     if (name === 'events') renderEvents();
     if (name === 'pokedex') renderDex();
@@ -418,10 +427,11 @@
     }).join('');
   }
 
-  function selectBoss(id) {
+  function selectBoss(id, opts) {
     var boss = BOSSES.filter(function (b) { return b.id === id; })[0];
     if (!boss) return;
     activeBossId = id;
+    if (!opts || !opts.silent) track('boss_select', { boss_id: id, boss_name: boss.kr });
 
     $$('.boss-chip').forEach(function (chip) {
       chip.classList.toggle('is-active', chip.getAttribute('data-boss') === id);
@@ -494,7 +504,7 @@
 
     // 첫 화면: 현재 진행 중인 보스 우선
     var first = BOSSES.filter(function (b) { return b.status === 'now'; })[0] || BOSSES[0];
-    if (first) selectBoss(first.id);
+    if (first) selectBoss(first.id, { silent: true });
   }
 
   /* ─────────────── 타입 상성 계산기 ─────────────── */
@@ -890,6 +900,7 @@
     dexSheet.list = list;
     dexSheet.idx = idx;
     dexSheet.shiny = false;
+    track('pokedex_view', { pokemon_no: id, pokemon_name: list[idx].n });
     renderDexSheet();
     $('#dex-backdrop').hidden = false;
     document.body.style.overflow = 'hidden';
@@ -938,15 +949,24 @@
         dexState.type = type;
         dexState.shown = DEX_CHUNK;
         renderDex();
+        track('dex_filter', { filter_type: 'type', filter_value: type, result_count: dexState.list.length });
       });
     }
 
     var q = $('#dex-q');
+    var searchTimer = null;
     if (q) {
       q.addEventListener('input', function () {
         dexState.q = q.value;
         dexState.shown = DEX_CHUNK;
         renderDex();
+        /* 타이핑 중에는 보내지 않고, 손을 뗀 뒤 0.9초에 한 번만 */
+        clearTimeout(searchTimer);
+        var term = q.value.trim();
+        if (!term) return;
+        searchTimer = setTimeout(function () {
+          track('pokedex_search', { search_term: term, result_count: dexState.list.length });
+        }, 900);
       });
     }
 
@@ -964,6 +984,7 @@
       shinyBtn.setAttribute('aria-pressed', dexState.shinyOnly ? 'true' : 'false');
       dexState.shown = DEX_CHUNK;
       renderDex();
+      track('dex_filter', { filter_type: 'shiny', filter_value: dexState.shinyOnly ? 'only' : 'all' });
     });
 
     var more = $('#dex-more');
@@ -1078,6 +1099,7 @@
     $('#modal-backdrop').hidden = false;
     document.body.style.overflow = 'hidden';
     $('#modal-close').focus();
+    track('modal_open', { modal_name: key });
   }
 
   function closeModal() {
@@ -1104,6 +1126,7 @@
     if (!btn) return;
     btn.addEventListener('click', function () {
       var url = location.href;
+      track('share', { method: navigator.share ? 'native' : (navigator.clipboard ? 'clipboard' : 'none') });
       if (navigator.share) {
         navigator.share({ title: '오박사의 포켓몬고 허브', url: url }).catch(function () {});
         return;
