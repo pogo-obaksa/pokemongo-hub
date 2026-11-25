@@ -14,7 +14,7 @@
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>오박사의 포켓몬고 허브 | 한글 도감·일정·레이드 카운터·육성 계산기</title>
-<meta name="description" content="포켓몬고 한글 도감(이름·초성·도감번호 검색, 이로치·최대 CP·기술), 한국 시간 일정 카운트다운, 레이드 보스 약점과 추천 카운터, 별의모래·사탕 육성 계산기, 타입 상성표까지 한 화면에서.">
+<meta name="description" content="포켓몬고 한글 도감(이름·초성·도감번호 검색, 이로치·최대 CP·기술), 한국 시간 일정 카운트다운, 레이드 보스 약점과 추천 카운터, 별의모래·사탕 육성 계산기, 타입 상성표, 초보·복귀용 에버그린 공략 4편까지 한 화면에서.">
 <meta name="keywords" content="포켓몬고 도감, 포켓몬고 한글 도감, 포켓몬고 일정, 레이드 카운터, 타입 상성, 별의모래 계산기, 육성 계산기, 테오키스, 메가메타그로스">
 <meta name="robots" content="index, follow">
 <meta name="theme-color" content="#F4F7FA">
@@ -282,8 +282,8 @@
       </details>
 
       <p class="fineprint">
-        40레벨부터는 사탕 대신 <strong>XL사탕</strong>이 들어갑니다(모래는 계속 소모). 1→40레벨 총비용은 별의모래 270,000 · 사탕 302개,
-        40→50레벨은 별의모래 290,000 · XL사탕 296개가 맞습니다.
+        40레벨부터는 사탕 대신 <strong>XL사탕</strong>이 들어갑니다(모래는 계속 소모). 1→40레벨 총비용은 별의모래 270,000 · 사탕 304개,
+        40→50레벨은 별의모래 250,000 · XL사탕 296개가 맞습니다.
         이로치(반짝반짝)는 육성 비용 할인과 아무 관련이 없고, 할인은 <strong>럭키</strong> 포켓몬(모래 50%)에만 붙어요.
       </p>
     </article>
@@ -292,98 +292,106 @@
   <!-- ══════════════════ 탭 5 : 가이드 ══════════════════ -->
   <section class="tab-panel" id="tab-guide" role="tabpanel" aria-labelledby="tabbtn-guide" hidden>
 
-    <article class="panel prose">
-      <h2>포켓몬고 타입 상성표, 이렇게 읽으면 끝</h2>
-      <p>포켓몬고에서 데미지는 크게 <strong>기술 위력 × 타입 상성 배율 × 날씨 부스트 × 공격력/방어력 비율</strong>로 결정됩니다.
-        이 중에서 우리가 직접 조절할 수 있는 게 타입 상성과 날씨예요. 상성 배율은 딱 네 가지 값만 나옵니다.</p>
-      <ul>
-        <li><strong>2.56배</strong> — 복합 타입의 두 약점을 동시에 찌를 때(예: 얼음 기술 → 드래곤·비행 메가망나뇽). 1.6 × 1.6 = 2.56.</li>
-        <li><strong>1.6배</strong> — 효과가 굉장함. 단일 타입 약점을 찌를 때의 기본값.</li>
-        <li><strong>0.625배</strong> — 효과가 별로 없음. 반감되는 타입.</li>
-        <li><strong>0.391배</strong> — 효과가 없음. 원작의 '무효'가 포켓몬고에서는 0.391배로 들어갑니다.</li>
-      </ul>
-      <p>그래서 5성 레이드를 잡을 때 가장 먼저 볼 것이 <strong>"이 보스가 몇 배로 맞는 타입"</strong>입니다.
-        2.56배가 뜨는 보스라면 그 타입 딜러 3~4마리로도 충분하고, 1.6배만 있다면 6마리를 꽉 채워야 시간이 맞아요.</p>
+    <div id="guide-index">
+      <header class="guide-hero">
+        <p class="guide-eyebrow">EVERGREEN GUIDE</p>
+        <h2>포켓몬고 공략, 한 편씩 골라 읽기</h2>
+        <p class="guide-lead">
+          처음 시작했거나 오랜만에 복귀했다면 여기서부터. 재화·그림자·메가진화·교환까지,
+          헷갈리기 쉬운 시스템을 표와 체크리스트로 정리했어.
+        </p>
+        <div class="guide-chips">
+          <span class="guide-chip">📚 4편</span>
+          <span class="guide-chip">🕒 편당 8~9분</span>
+          <span class="guide-chip is-soft">2026.11 기준</span>
+        </div>
+      </header>
 
-      <h3>레이드 아워 60분, 이렇게 쓰세요</h3>
-      <ol>
-        <li><strong>30분 전</strong> — 체육관 3~4곳을 미리 찍어 두고, 각 체육관의 레이드 시작 시각을 확인합니다.</li>
-        <li><strong>10분 전</strong> — 파티를 미리 짜 둡니다. 6마리 모두 같은 약점 타입으로 채우는 게 핵심이에요.</li>
-        <li><strong>시작과 동시에</strong> — 인원이 가장 많은 체육관부터. 로비 인원이 5명 미만이면 다음 체육관으로 이동하는 게 이득입니다.</li>
-        <li><strong>종료 10분 전</strong> — 남은 무료 패스로 마지막 한 판. 여기서 잡은 포켓몬은 바로 IV를 확인하세요.</li>
-      </ol>
+      <div class="guide-grid" id="guide-list" aria-label="가이드 목록"></div>
 
-      <!-- 제휴 배너 3 : 쿠팡 파트너스 -->
-      <div class="promo-slot">
-        <a class="promo promo--coupang" href="https://link.coupang.com/a/iYJYCkpdYW"
-           target="_blank" rel="noopener noreferrer sponsored"
-           data-partner="coupang" data-slot="guide-mid"
-           aria-label="쿠팡 파트너스 — 포고플 포켓몬고 오토캐치 상품 보기 (새 창)">
-          <span class="promo-mark" aria-hidden="true">쿠팡</span>
-          <span class="promo-main">
-            <span class="promo-eyebrow">포켓몬고 필수템 · 쿠팡</span>
-            <strong class="promo-title">커뮤니티데이 3시간, 손가락 대신 포고플</strong>
-            <span class="promo-desc">몬스터볼·사탕을 자동으로 모아 줍니다.</span>
-          </span>
-          <span class="promo-cta">쿠팡에서 보기<span class="promo-arrow" aria-hidden="true">→</span></span>
-        </a>
-        <p class="promo-note">이 배너는 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>
+      <div id="guide-mid-home">
+        <!-- 제휴 배너 3 : 쿠팡 파트너스 -->
+        <div class="promo-slot" id="promo-guide-mid">
+          <a class="promo promo--coupang" href="https://link.coupang.com/a/iYJYCkpdYW"
+             target="_blank" rel="noopener noreferrer sponsored"
+             data-partner="coupang" data-slot="guide-mid"
+             aria-label="쿠팡 파트너스 — 포고플 포켓몬고 오토캐치 상품 보기 (새 창)">
+            <span class="promo-mark" aria-hidden="true">쿠팡</span>
+            <span class="promo-main">
+              <span class="promo-eyebrow">포켓몬고 필수템 · 쿠팡</span>
+              <strong class="promo-title">커뮤니티데이 3시간, 손가락 대신 포고플</strong>
+              <span class="promo-desc">몬스터볼·사탕을 자동으로 모아 줍니다.</span>
+            </span>
+            <span class="promo-cta">쿠팡에서 보기<span class="promo-arrow" aria-hidden="true">→</span></span>
+          </a>
+          <p class="promo-note">이 배너는 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>
+        </div>
       </div>
 
-      <h3>반짝반짝(이로치) · 그림자 · 정화, 육성은 뭘로?</h3>
-      <p>세 가지를 자주 헷갈리시는데, 육성 비용과 성능은 완전히 다릅니다.</p>
-      <ul>
-        <li><strong>이로치(반짝반짝)</strong> — 색만 다릅니다. 능력치도 육성 비용도 일반과 똑같아요. 비용 할인은 없습니다.</li>
-        <li><strong>그림자</strong> — 공격력 1.2배, 방어력 0.83배. 육성 비용은 <strong>모래·사탕 모두 20% 더</strong> 듭니다. 레이드 딜러로는 최상급이에요.</li>
-        <li><strong>정화</strong> — 육성 비용이 <strong>10% 할인</strong>되고, 그림자보다 방어가 높아집니다. 대신 공격 보너스는 사라져요.</li>
-        <li><strong>럭키</strong> — 교환으로만 만들 수 있고, 육성 모래가 <strong>50%</strong>로 줄어듭니다(사탕은 그대로). 40→50레벨처럼 모래가 많이 드는 구간에서 특히 이득이에요.</li>
-      </ul>
+      <section class="panel guide-extra" aria-labelledby="guide-basics-title">
+        <h2 class="panel-title" id="guide-basics-title">허브 기본기 — 타입 상성표 읽는 법</h2>
+        <p class="panel-desc">
+          포켓몬고 데미지는 <strong>기술 위력 × 타입 상성 × 날씨 부스트 × 공격력/방어력 비율</strong>로 정해져.
+          이 중에서 내가 직접 고를 수 있는 게 타입 상성이야. 배율은 딱 네 값만 나와.
+        </p>
+        <ul class="guide-mult">
+          <li><strong>2.56배</strong> — 복합 타입의 약점 두 개를 동시에 찌를 때(1.6 × 1.6). 예: 얼음 기술 → 드래곤·비행.</li>
+          <li><strong>1.6배</strong> — 효과가 굉장함. 단일 약점을 찌를 때의 기본값.</li>
+          <li><strong>0.625배</strong> — 효과가 별로 없음. 반감되는 타입.</li>
+          <li><strong>0.391배</strong> — 효과가 없음. 원작의 '무효'가 포켓몬고에서는 0.391배로 들어와.</li>
+        </ul>
+        <p>
+          그래서 레이드에서 가장 먼저 볼 것은 <strong>"이 보스가 몇 배로 맞는 타입인지"</strong>야.
+          2.56배가 뜨는 보스는 그 타입 딜러 3~4마리로도 충분하고, 1.6배만 있으면 6마리를 꽉 채우는 게 안정적이야.
+          카운터 탭에서 보스를 고르면 약점과 추천 카운터가 한 번에 나와.
+        </p>
 
-      <h3>별의모래, 어디서 모으나</h3>
-      <p>하루 1만~2만 모래를 꾸준히 모으는 루트를 추천합니다. ① 매일 첫 포획 + 주간 리워드, ② GO패스 미션 보상,
-        ③ 별의모래가 2배인 이벤트 시간에 별조각을 켜고 잡기, ④ 친구 선물 열기, ⑤ 체육관 방어 보상.
-        특히 <strong>별조각(1.5배) + 날씨 부스트 + 이벤트 2배</strong>가 겹치는 시간에 몰아서 잡으면 하루에 5만도 가능합니다.</p>
+        <h3>자주 묻는 질문</h3>
+        <details class="faq">
+          <summary>카운트다운 시간이 내 폰 시계와 달라요</summary>
+          <p>이 페이지는 기기 시간대와 상관없이 <strong>한국 표준시(KST, UTC+9)</strong> 기준으로 계산해.
+            해외에 있거나 폰 시간이 자동 설정이 아니라면 차이가 날 수 있어. 상단 시계가 실제 한국 시간과 맞는지 확인해 봐.</p>
+        </details>
+        <details class="faq">
+          <summary>레이드 일정은 언제 갱신되나요</summary>
+          <p>해외 공식 공지와 일정 사이트를 대조해 갱신해. 마지막 확인일은 일정 탭 하단에 표시돼.
+            게임 내 공지와 다르면 게임이 우선이야.</p>
+        </details>
+        <details class="faq">
+          <summary>추천 카운터는 어떻게 고르나요</summary>
+          <p>보스의 약점 타입을 찌르는 기술을 가진 딜러 중에서, 실제 레이드에서 검증된 순위를 기준으로 6마리를 추려.
+            같은 타입이라도 기술 조합에 따라 딜이 크게 달라지니 표시된 기술을 그대로 맞춰 줘.</p>
+        </details>
+        <details class="faq">
+          <summary>다이맥스(맥스배틀)도 같은 계산인가요</summary>
+          <p>아니야. 맥스배틀은 다이맥스 포켓몬의 <strong>맥스무브</strong>로 싸우기 때문에, 일반 레이드 카운터보다
+            '같은 타입 맥스무브를 가진 다이맥스 포켓몬'이 훨씬 중요해. 카운터 탭에서 맥스 보스를 고르면 별도 안내가 떠.</p>
+        </details>
+      </section>
 
-      <!-- 제휴 배너 4 : 겜스고 -->
-      <div class="promo-slot">
-        <a class="promo promo--gamsgo" href="https://www.gamsgo.com/partner/cYpzj"
-           target="_blank" rel="noopener noreferrer sponsored"
-           data-partner="gamsgo" data-slot="guide-bottom"
-           aria-label="겜스고 — 포켓몬고 포켓코인 충전 보기 (새 창)">
-          <span class="promo-mark" aria-hidden="true">겜스고</span>
-          <span class="promo-main">
-            <span class="promo-eyebrow">포켓코인 충전 · 겜스고</span>
-            <strong class="promo-title">레이드패스·GO패스도 겜스고에서</strong>
-            <span class="promo-desc">포켓코인부터 리모트 레이드패스까지 한곳에서, 계정 직접 충전.</span>
-          </span>
-          <span class="promo-cta">겜스고에서 보기<span class="promo-arrow" aria-hidden="true">→</span></span>
-        </a>
-        <p class="promo-note">겜스고 제휴 링크입니다. 이 링크를 거쳐 구매하면 일정액의 수수료를 받을 수 있습니다.</p>
+      <div id="guide-bottom-home">
+        <!-- 제휴 배너 4 : 겜스고 -->
+        <div class="promo-slot" id="promo-guide-bottom">
+          <a class="promo promo--gamsgo" href="https://www.gamsgo.com/partner/cYpzj"
+             target="_blank" rel="noopener noreferrer sponsored"
+             data-partner="gamsgo" data-slot="guide-bottom"
+             aria-label="겜스고 — 포켓몬고 포켓코인 충전 보기 (새 창)">
+            <span class="promo-mark" aria-hidden="true">겜스고</span>
+            <span class="promo-main">
+              <span class="promo-eyebrow">포켓코인 충전 · 겜스고</span>
+              <strong class="promo-title">레이드패스·GO패스도 겜스고에서</strong>
+              <span class="promo-desc">포켓코인부터 리모트 레이드패스까지 한곳에서, 계정 직접 충전.</span>
+            </span>
+            <span class="promo-cta">겜스고에서 보기<span class="promo-arrow" aria-hidden="true">→</span></span>
+          </a>
+          <p class="promo-note">겜스고 제휴 링크입니다. 이 링크를 거쳐 구매하면 일정액의 수수료를 받을 수 있습니다.</p>
+        </div>
       </div>
+    </div>
 
-      <h3>자주 묻는 질문</h3>
-      <details class="faq">
-        <summary>카운트다운 시간이 제 폰 시계와 달라요</summary>
-        <p>이 페이지는 기기 시간대와 상관없이 <strong>한국 표준시(KST, UTC+9)</strong> 기준으로 계산합니다.
-          해외에 있거나 폰 시간이 자동 설정이 아니라면 차이가 날 수 있어요. 상단 시계가 실제 한국 시간과 맞는지 확인해 보세요.</p>
-      </details>
-      <details class="faq">
-        <summary>레이드 일정은 언제 갱신되나요</summary>
-        <p>해외 공식 공지와 일정 사이트를 대조해 갱신합니다. 마지막 확인일은 일정 탭 하단에 표시돼요.
-          게임 내 공지와 다르면 게임이 우선입니다.</p>
-      </details>
-      <details class="faq">
-        <summary>추천 카운터는 어떻게 고르나요</summary>
-        <p>보스의 약점 타입을 찌르는 기술을 가진 딜러 중에서, 실제 레이드에서 검증된 순위를 기준으로 6마리를 추립니다.
-          같은 타입이라도 기술 조합에 따라 딜이 크게 달라지니 표시된 기술을 그대로 맞춰 주세요.</p>
-      </details>
-      <details class="faq">
-        <summary>다이맥스(맥스배틀)도 같은 계산인가요</summary>
-        <p>아니요. 맥스배틀은 다이맥스 포켓몬의 <strong>맥스무브</strong>로 싸우기 때문에, 일반 레이드 카운터보다
-          '같은 타입 맥스무브를 가진 다이맥스 포켓몬'이 훨씬 중요합니다. 카운터 탭에서 맥스 보스를 고르면 별도 안내가 뜹니다.</p>
-      </details>
-    </article>
+    <article class="panel prose guide-article" id="guide-article" hidden tabindex="-1"></article>
   </section>
+
 </main>
 
 <footer class="site-footer">
@@ -396,6 +404,7 @@
     <button type="button" data-modal="privacy">개인정보처리방침</button>
     <button type="button" data-modal="terms">이용약관</button>
     <button type="button" data-modal="contact">문의</button>
+    <button type="button" data-modal="disclaimer">면책조항</button>
     <button type="button" data-modal="about">소개</button>
   </nav>
   <p class="footer-legal">
@@ -437,6 +446,7 @@
 <script src="data/events.js"></script>
 <script src="data/raids.js"></script>
 <script src="data/pokedex.js"></script>
+<script src="data/guides.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

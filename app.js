@@ -12,6 +12,7 @@
   var MAX_TIPS = window.HUB_MAX_TIPS || {};
   var DEX = window.HUB_POKEDEX || [];
   var DEX_MOVES = window.HUB_DEX_MOVES || [];
+  var GUIDES = window.HUB_GUIDES || [];
 
   var $ = function (sel, root) { return (root || document).querySelector(sel); };
   var $$ = function (sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); };
@@ -109,8 +110,14 @@
       }
       if (panel) panel.hidden = !on;
     });
+    if (name === 'guide') {
+      if (opts && opts.guide) openGuide(opts.guide, { nav: 'none' });
+      else showGuideIndex({ nav: 'none' });
+    }
     if (!opts || !opts.silent) {
-      if (history.replaceState) history.replaceState(null, '', '#' + name);
+      var hash = '#' + name;
+      if (name === 'guide' && guideState.slug) hash = '#guide/' + guideState.slug;
+      if (history.replaceState) history.replaceState(null, '', hash);
       track('tab_switch', { tab_name: name });
     }
     if (name === 'events') renderEvents();
@@ -560,7 +567,8 @@
     { until: 21, dust: 2500, candy: 2 },
     { until: 23, dust: 3000, candy: 3 },
     { until: 25, dust: 3500, candy: 3 },
-    { until: 27, dust: 4000, candy: 3 },
+    { until: 26, dust: 4000, candy: 3 },
+    { until: 27, dust: 4000, candy: 4 },
     { until: 29, dust: 4500, candy: 4 },
     { until: 31, dust: 5000, candy: 4 },
     { until: 33, dust: 6000, candy: 6 },
@@ -571,8 +579,8 @@
   ];
 
   /* 40 → 50 : 반 레벨 단위 모래 / XL사탕 */
-  var XL_DUST = [10000, 10000, 11000, 11000, 12000, 12000, 13000, 13000, 14000, 14000,
-                 15000, 15000, 16000, 16000, 17000, 17000, 18000, 18000, 19000, 19000];
+  var XL_DUST = [10000, 10000, 11000, 11000, 11000, 11000, 12000, 12000, 12000, 12000,
+                 13000, 13000, 13000, 13000, 14000, 14000, 14000, 14000, 15000, 15000];
   var XL_CANDY = [10, 10, 10, 10, 12, 12, 12, 12, 15, 15,
                   15, 15, 17, 17, 17, 17, 20, 20, 20, 20];
 
@@ -1027,6 +1035,265 @@
     renderDex();
   }
 
+  /* ─────────────── 가이드 탭 (멀티 글) ───────────────
+     #guide            → 글 목록
+     #guide/<slug>     → 개별 글 (뒤로가기·공유 가능)
+     ?guide=<slug>     → 첫 진입 시 #guide/<slug> 로 바꿔 준다 */
+  var guideState = { slug: null };
+  var BASE_TITLE = document.title;
+
+  function guideBySlug(slug) {
+    for (var i = 0; i < GUIDES.length; i++) if (GUIDES[i].slug === slug) return GUIDES[i];
+    return null;
+  }
+
+  function guidePad(n) { return (n < 10 ? '0' : '') + n; }
+
+  function guideCardHTML(g) {
+    return '<button class="guide-card" type="button" data-guide-slug="' + g.slug + '" aria-label="' + g.title + ' 읽기">' +
+      '<span class="guide-card-top">' +
+        '<span class="guide-num">' + guidePad(g.no) + '</span>' +
+        '<span class="guide-card-emoji" aria-hidden="true">' + g.emoji + '</span>' +
+        '<span class="guide-read">' + g.readMin + '분</span>' +
+      '</span>' +
+      '<span class="guide-card-title">' + g.title + '</span>' +
+      '<span class="guide-card-kicker">' + g.kicker + '</span>' +
+      '<span class="guide-card-summary">' + g.summary + '</span>' +
+      '<span class="guide-card-foot">' +
+        '<span class="guide-tags">' + g.tags.map(function (t) { return '<span class="guide-tag">#' + t + '</span>'; }).join('') + '</span>' +
+        '<span class="guide-go">읽기 <span aria-hidden="true">→</span></span>' +
+      '</span>' +
+    '</button>';
+  }
+
+  function renderGuideList() {
+    var el = $('#guide-list');
+    if (!el) return;
+    el.innerHTML = GUIDES.map(guideCardHTML).join('');
+  }
+
+  function guideTocHTML(g) {
+    return '<nav class="guide-toc" aria-label="이 글의 목차">' +
+      '<span class="guide-toc-title">목차</span><ol>' +
+      g.sections.map(function (s) {
+        return '<li><button type="button" class="guide-toc-link" data-guide-jump="' + s.id + '">' + s.h + '</button></li>';
+      }).join('') +
+      '</ol></nav>';
+  }
+
+  function guideToolsHTML(g) {
+    if (!g.tools || !g.tools.length) return '';
+    return '<section class="guide-tools" aria-labelledby="guide-tools-' + g.slug + '">' +
+      '<h2 id="guide-tools-' + g.slug + '">이 글과 함께 쓰는 도구</h2>' +
+      '<div class="guide-tool-grid">' +
+      g.tools.map(function (t) {
+        return '<button class="guide-tool" type="button" data-goto="' + t.tab + '"' +
+          (t.q ? ' data-dex-q="' + t.q + '"' : '') +
+          (t.boss ? ' data-boss="' + t.boss + '"' : '') +
+          (t.from ? ' data-from="' + t.from + '"' : '') +
+          (t.to ? ' data-to="' + t.to + '"' : '') +
+          (t.kind ? ' data-kind="' + t.kind + '"' : '') + '>' +
+          '<span class="guide-tool-label">' + t.label + '</span>' +
+          '<span class="guide-tool-desc">' + t.desc + '</span>' +
+          '<span class="guide-tool-go">바로 가기 <span aria-hidden="true">→</span></span>' +
+        '</button>';
+      }).join('') +
+      '</div></section>';
+  }
+
+  function guidePagerHTML(g) {
+    var idx = GUIDES.indexOf(g);
+    if (idx < 0 || GUIDES.length < 2) return '';
+    var prev = GUIDES[(idx - 1 + GUIDES.length) % GUIDES.length];
+    var next = GUIDES[(idx + 1) % GUIDES.length];
+    return '<nav class="guide-pager" aria-label="다른 가이드">' +
+      '<button class="guide-pager-btn is-prev" type="button" data-guide-slug="' + prev.slug + '">' +
+        '<span class="gp-dir">← 이전 글</span><span class="gp-title">' + prev.title + '</span></button>' +
+      '<button class="guide-pager-btn is-next" type="button" data-guide-slug="' + next.slug + '">' +
+        '<span class="gp-dir">다음 글 →</span><span class="gp-title">' + next.title + '</span></button>' +
+    '</nav>';
+  }
+
+  function guideArticleHTML(g) {
+    var secs = g.sections.map(function (s, i) {
+      var html = '<section class="guide-sec" id="guide-' + g.slug + '-' + s.id + '">' +
+        '<h2>' + s.h + '</h2>' + s.html + '</section>';
+      /* 중간 배너는 세 번째 섹션 뒤에 끼워 넣는다 */
+      if (i === 2) html += '<div class="guide-slot" data-slot="guide-mid"></div>';
+      return html;
+    }).join('');
+
+    return '<header class="guide-head">' +
+        '<button class="guide-back" type="button" data-guide-back>← 가이드 목록</button>' +
+        '<p class="guide-eyebrow">GUIDE ' + guidePad(g.no) + ' · ' + g.tags.join(' · ') + '</p>' +
+        '<h1 class="guide-title" tabindex="-1">' + g.title + '</h1>' +
+        '<p class="guide-kicker">' + g.kicker + '</p>' +
+        '<p class="guide-summary">' + g.summary + '</p>' +
+        '<div class="guide-meta">' +
+          '<span>🕒 약 ' + g.readMin + '분</span>' +
+          '<span>최종 확인 ' + g.updated + '</span>' +
+          '<button class="guide-share" type="button" data-guide-share>🔗 링크 복사</button>' +
+        '</div>' +
+      '</header>' +
+      guideTocHTML(g) +
+      '<div class="guide-body">' + secs + '</div>' +
+      '<div class="guide-slot" data-slot="guide-bottom"></div>' +
+      guideToolsHTML(g) +
+      '<p class="fineprint guide-fineprint">' +
+        '기준일 ' + g.updated + ' · 수치는 게임 내 표기와 진행 중인 이벤트에 따라 달라질 수 있어. ' +
+        '업데이트로 내용이 바뀌면 게임 화면이 우선이야.' +
+      '</p>' +
+      guidePagerHTML(g);
+  }
+
+  /* 제휴 배너 노드는 항상 4개만 두고, 화면에 따라 자리만 옮긴다(중복 생성 금지) */
+  function placeGuidePromos(where) {
+    var mid = document.getElementById('promo-guide-mid');
+    var bottom = document.getElementById('promo-guide-bottom');
+    if (!mid || !bottom) return;
+    if (where === 'article') {
+      var slotMid = $('#guide-article .guide-slot[data-slot="guide-mid"]');
+      var slotBottom = $('#guide-article .guide-slot[data-slot="guide-bottom"]');
+      if (slotMid) slotMid.appendChild(mid);
+      if (slotBottom) slotBottom.appendChild(bottom);
+    } else {
+      var homeMid = document.getElementById('guide-mid-home');
+      var homeBottom = document.getElementById('guide-bottom-home');
+      if (homeMid) homeMid.appendChild(mid);
+      if (homeBottom) homeBottom.appendChild(bottom);
+    }
+  }
+
+  function showGuideIndex(opts) {
+    var idxEl = $('#guide-index'), artEl = $('#guide-article');
+    if (!idxEl || !artEl) return;
+    guideState.slug = null;
+    /* 배너 노드를 먼저 꺼내야 innerHTML 초기화에 함께 지워지지 않는다 */
+    placeGuidePromos('index');
+    artEl.hidden = true;
+    artEl.innerHTML = '';
+    idxEl.hidden = false;
+    document.title = BASE_TITLE;
+    if (!opts || opts.nav !== 'none') {
+      if (history.replaceState) history.replaceState(null, '', '#guide');
+    }
+  }
+
+  function openGuide(slug, opts) {
+    var g = guideBySlug(slug);
+    if (!g) { showGuideIndex(opts); return; }
+    var idxEl = $('#guide-index'), artEl = $('#guide-article');
+    if (!idxEl || !artEl) return;
+    guideState.slug = g.slug;
+    idxEl.hidden = true;
+    placeGuidePromos('index');
+    artEl.hidden = false;
+    artEl.innerHTML = guideArticleHTML(g);
+    placeGuidePromos('article');
+    document.title = g.title + ' | 오박사의 포켓몬고 허브';
+
+    var nav = (opts && opts.nav) || 'push';
+    if (nav === 'push' && history.pushState) history.pushState(null, '', '#guide/' + g.slug);
+    else if (nav === 'replace' && history.replaceState) history.replaceState(null, '', '#guide/' + g.slug);
+
+    track('guide_view', { guide_slug: g.slug, guide_title: g.title, guide_no: g.no });
+
+    window.scrollTo(0, 0);
+    var title = artEl.querySelector('.guide-title');
+    if (title && title.focus) title.focus({ preventScroll: true });
+  }
+
+  function copyGuideLink() {
+    var url = location.href;
+    track('guide_share', { guide_slug: guideState.slug || '' });
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(url).then(function () { toast('이 글 링크를 복사했어요'); })
+        .catch(function () { toast('주소창의 링크를 복사해 주세요'); });
+    } else {
+      toast('주소창의 링크를 복사해 주세요');
+    }
+  }
+
+  function jumpGuideSection(id) {
+    var g = guideBySlug(guideState.slug);
+    if (!g) return;
+    var el = document.getElementById('guide-' + g.slug + '-' + id);
+    if (!el) return;
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    track('guide_toc_click', { guide_slug: g.slug, section: id });
+  }
+
+  /* 가이드 글 안의 버튼으로 다른 탭을 바로 열기 */
+  function goFromGuide(btn) {
+    var tab = btn.getAttribute('data-goto');
+    if (TABS.indexOf(tab) < 0) return;
+    track('guide_tool_click', { guide_slug: guideState.slug || '', target_tab: tab });
+
+    if (tab === 'pokedex') {
+      var q = btn.getAttribute('data-dex-q') || '';
+      var input = $('#dex-q');
+      dexState.q = q;
+      dexState.type = 'all';
+      dexState.shinyOnly = false;
+      dexState.shown = DEX_CHUNK;
+      if (input) input.value = q;
+      var shinyBtn = $('#dex-shiny-only');
+      if (shinyBtn) shinyBtn.setAttribute('aria-pressed', 'false');
+      $$('.dex-type-chip').forEach(function (c) {
+        c.classList.toggle('is-active', c.getAttribute('data-dex-type') === 'all');
+        c.style.background = ''; c.style.color = ''; c.style.borderColor = '';
+      });
+      switchTab('pokedex');
+    } else if (tab === 'raids') {
+      switchTab('raids');
+      var boss = btn.getAttribute('data-boss');
+      if (boss) selectBoss(boss);
+    } else if (tab === 'powerup') {
+      var f = btn.getAttribute('data-from');
+      var t = btn.getAttribute('data-to');
+      var k = btn.getAttribute('data-kind');
+      if (f) $('#from-level').value = f;
+      if (t) $('#to-level').value = t;
+      if (k) {
+        kind = k;
+        $$('.seg').forEach(function (b) { b.classList.toggle('is-active', b.getAttribute('data-kind') === k); });
+      }
+      switchTab('powerup');
+    }
+    window.scrollTo(0, 0);
+  }
+
+  function initGuides() {
+    if (!GUIDES.length) return;
+    renderGuideList();
+    var root = $('#tab-guide');
+    if (!root) return;
+    root.addEventListener('click', function (e) {
+      var back = e.target.closest('[data-guide-back]');
+      if (back) { showGuideIndex(); return; }
+      var share = e.target.closest('[data-guide-share]');
+      if (share) { copyGuideLink(); return; }
+      var jump = e.target.closest('[data-guide-jump]');
+      if (jump) { jumpGuideSection(jump.getAttribute('data-guide-jump')); return; }
+      var tool = e.target.closest('[data-goto]');
+      if (tool) { goFromGuide(tool); return; }
+      var card = e.target.closest('[data-guide-slug]');
+      if (card) { openGuide(card.getAttribute('data-guide-slug')); return; }
+    });
+  }
+
+  /* 주소(#guide/<slug>)로 들어온 경우 그 글을 연다 */
+  function routeFromLocation() {
+    var hash = (location.hash || '').replace(/^#/, '');
+    if (hash.indexOf('guide/') === 0) {
+      var slug = hash.slice(6).split('/')[0];
+      if (guideBySlug(slug)) { switchTab('guide', { silent: true, guide: slug }); return true; }
+    }
+    if (hash === 'guide') { switchTab('guide', { silent: true }); return true; }
+    if (TABS.indexOf(hash) >= 0) { switchTab(hash, { silent: true }); return true; }
+    return false;
+  }
+
   /* ─────────────── 모달 ─────────────── */
   var MODALS = {
     privacy: {
@@ -1080,6 +1347,21 @@
         '<li><strong>인스타그램</strong> — @obak.sa DM</li>' +
         '</ul>' +
         '<p style="color:var(--muted)">일정 오류를 알려주실 때는 이벤트 이름과 화면에 보이는 시각을 함께 적어 주시면 빠르게 확인할 수 있어요.</p>'
+    },
+    disclaimer: {
+      title: '면책조항',
+      body:
+        '<h3>1. 정보의 성격</h3>' +
+        '<p>본 사이트의 일정·배율·육성 비용·공략은 공개된 게임 정보와 게임 내 표기를 정리한 <strong>참고 자료</strong>입니다. 게임 업데이트, 이벤트, 지역에 따라 실제 수치와 조건이 달라질 수 있으며, 최종 기준은 게임 화면입니다.</p>' +
+        '<h3>2. 보증하지 않는 것</h3>' +
+        '<p>정보의 완전성·최신성·특정 목적 적합성을 보증하지 않습니다. 본 사이트의 정보를 이용해 내린 육성·교환·구매 등의 판단과 그 결과에 대해 운영자는 책임을 지지 않습니다.</p>' +
+        '<h3>3. 상표 및 제휴</h3>' +
+        '<p>Pokémon 및 Pokémon GO 관련 명칭·이미지·상표의 권리는 Nintendo, Creatures Inc., GAME FREAK inc., Niantic, Inc.에 있습니다. 본 사이트는 비공식 팬 사이트로, 이들과 제휴하거나 후원받지 않습니다.</p>' +
+        '<h3>4. 제휴 링크 고지</h3>' +
+        '<p>일부 배너는 쿠팡 파트너스·겜스고 등 제휴 링크이며, 이를 통해 구매가 이루어지면 운영자가 일정액의 수수료를 받을 수 있습니다. 상품의 가격·조건·품질은 판매처가 정하는 것이며, 구매 결정은 이용자에게 있습니다.</p>' +
+        '<h3>5. 외부 링크</h3>' +
+        '<p>사이트에 연결된 외부 페이지의 내용과 개인정보 처리에는 운영자가 관여하지 않습니다.</p>' +
+        '<p style="color:var(--muted)">시행일: 2026년 11월 26일</p>'
     },
     about: {
       title: '소개',
@@ -1182,9 +1464,27 @@
     initModals();
     initShare();
     initPromoBanners();
+    initGuides();
 
-    var hash = (location.hash || '').replace('#', '');
-    switchTab(TABS.indexOf(hash) >= 0 ? hash : 'events', { silent: true });
+    window.addEventListener('popstate', routeFromLocation);
+    window.addEventListener('hashchange', routeFromLocation);
+
+    /* ?guide=<slug> 로 들어와도 해시 주소로 바꿔서 공유·뒤로가기가 되게 한다 */
+    var qGuide = null;
+    try { qGuide = new URLSearchParams(location.search).get('guide'); } catch (e) { qGuide = null; }
+    if (qGuide && guideBySlug(qGuide)) {
+      try {
+        var params = new URLSearchParams(location.search);
+        params.delete('guide');
+        var qs = params.toString();
+        if (history.replaceState) {
+          history.replaceState(null, '', location.pathname + (qs ? '?' + qs : '') + '#guide/' + qGuide);
+        }
+      } catch (e2) { /* URL API 실패 시 해시만 유지 */ }
+      switchTab('guide', { silent: true, guide: qGuide });
+    } else if (!routeFromLocation()) {
+      switchTab('events', { silent: true });
+    }
     renderEvents();
 
     setInterval(function () {
@@ -1230,6 +1530,10 @@
     events: EVENTS,
     bosses: BOSSES,
     dex: DEX,
+    guides: GUIDES,
+    openGuide: openGuide,
+    showGuideIndex: showGuideIndex,
+    guideState: guideState,
     maxCP: function (id) { var p = DEX.filter(function (x) { return x.id === id; })[0]; return p ? { lv40: maxCP(p, CPM40), lv50: maxCP(p, CPM50) } : null; },
     openDex: openDex,
     closeDex: closeDex
