@@ -37,7 +37,7 @@
       desc: '황혼의 소원 초반부 5성 레이드. 다음 재등장을 기다려야 해요.',
       source: 'https://leekduck.com/events/cresselia-darkrai-in-5-star-raid-battles-november-2026/'
     }),
-    E('max-monday-espurr', '다이맥스 냐옹이 맥스 먼데이 (종료)', null, '2026-11-23T21:00:00+09:00', 'max', {
+    E('max-monday-espurr', '다이맥스 냐스퍼 맥스 먼데이 (종료)', null, '2026-11-23T21:00:00+09:00', 'max', {
       badge: '맥스 먼데이', emoji: '💜', pokemonId: 677, priority: 0,
       desc: '11/23 맥스 먼데이 메인 다이맥스 보스였어요.',
       source: 'https://leekduck.com/events/max-mondays-2026-11-23/'
@@ -141,10 +141,10 @@
       tip: '격투가 2.56배로 가장 잘 꽂히고, 땅도 1.6배예요. 그림자라 받는 피해가 아프니 방어 위주로.',
       source: 'https://leekduck.com/events/shadow-dialga-in-shadow-raids-december-2026/'
     }),
-    E('wimpod-spotlight', '왕눈해 스포트라이트 아워', '2026-12-03T18:00:00+09:00', '2026-12-03T19:00:00+09:00', 'spotlight', {
-      badge: '스포트라이트', emoji: '🪲', pokemonId: 72, priority: 45,
-      desc: '18:00~19:00 왕눈해 대량 발생 + 사탕 2배.',
-      tip: '왕눈해는 도망을 잘 가니 파인베리를 꼭 먹이세요.',
+    E('wimpod-spotlight', '꼬시레 스포트라이트 아워', '2026-12-03T18:00:00+09:00', '2026-12-03T19:00:00+09:00', 'spotlight', {
+      badge: '스포트라이트', emoji: '🪲', pokemonId: 767, priority: 45,
+      desc: '18:00~19:00 꼬시레 대량 발생 + 사탕 2배.',
+      tip: '꼬시레는 도망을 잘 가니 파인베리를 꼭 먹이세요.',
       source: 'https://leekduck.com/events/pokemonspotlighthour2026-12-03/'
     }),
     E('max-battle-day', '맥스배틀 데이', '2026-12-05T14:00:00+09:00', '2026-12-05T17:00:00+09:00', 'max', {
