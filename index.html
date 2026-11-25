@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>오박사의 포켓몬고 허브 | 일정·레이드 카운터·육성 계산기</title>
-<meta name="description" content="포켓몬고 한국 시간 일정 카운트다운, 레이드 보스 약점과 추천 카운터, 별의모래·사탕 육성 계산기, 타입 상성표까지 한 화면에서. 오박사의 포켓몬 백과사전 공식 도구.">
-<meta name="keywords" content="포켓몬고, 포켓몬고 일정, 레이드 카운터, 타입 상성, 별의모래 계산기, 육성 계산기, 테오키스, 메가메타그로스">
+<title>오박사의 포켓몬고 허브 | 한글 도감·일정·레이드 카운터·육성 계산기</title>
+<meta name="description" content="포켓몬고 한글 도감(이름·초성·도감번호 검색, 이로치·최대 CP·기술), 한국 시간 일정 카운트다운, 레이드 보스 약점과 추천 카운터, 별의모래·사탕 육성 계산기, 타입 상성표까지 한 화면에서.">
+<meta name="keywords" content="포켓몬고 도감, 포켓몬고 한글 도감, 포켓몬고 일정, 레이드 카운터, 타입 상성, 별의모래 계산기, 육성 계산기, 테오키스, 메가메타그로스">
 <meta name="robots" content="index, follow">
 <meta name="theme-color" content="#F4F7FA">
 <meta property="og:type" content="website">
 <meta property="og:title" content="오박사의 포켓몬고 허브">
-<meta property="og:description" content="레이드 일정 카운트다운부터 카운터·육성 계산기까지, 포켓몬고 트레이너용 올인원 도구.">
+<meta property="og:description" content="한글 도감 검색부터 레이드 일정 카운트다운·카운터·육성 계산기까지, 포켓몬고 트레이너용 올인원 도구.">
 <meta property="og:site_name" content="오박사의 포켓몬 백과사전">
 <meta name="twitter:card" content="summary">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='%23f5f7ff' stroke='%230b1020' stroke-width='8'/%3E%3Cpath d='M6 50h88' stroke='%230b1020' stroke-width='8'/%3E%3Ccircle cx='50' cy='50' r='14' fill='%230b1020'/%3E%3Ccircle cx='50' cy='50' r='6' fill='%23f5f7ff'/%3E%3C/svg%3E">
@@ -43,6 +43,9 @@
     </button>
     <button class="tab" role="tab" id="tabbtn-raids" aria-selected="false" aria-controls="tab-raids" data-tab="raids" tabindex="-1">
       <span class="tab-emoji">⚔️</span><span>카운터</span>
+    </button>
+    <button class="tab" role="tab" id="tabbtn-pokedex" aria-selected="false" aria-controls="tab-pokedex" data-tab="pokedex" tabindex="-1">
+      <span class="tab-emoji">📘</span><span>도감</span>
     </button>
     <button class="tab" role="tab" id="tabbtn-powerup" aria-selected="false" aria-controls="tab-powerup" data-tab="powerup" tabindex="-1">
       <span class="tab-emoji">⚡</span><span>육성</span>
@@ -158,7 +161,36 @@
     </article>
   </section>
 
-  <!-- ══════════════════ 탭 3 : 육성 ══════════════════ -->
+  <!-- ══════════════════ 탭 3 : 도감 ══════════════════ -->
+  <section class="tab-panel" id="tab-pokedex" role="tabpanel" aria-labelledby="tabbtn-pokedex" hidden>
+
+    <div class="dex-search">
+      <div class="dex-search-field">
+        <span class="dex-search-icon" aria-hidden="true">🔍</span>
+        <input type="search" id="dex-q" class="dex-input" autocomplete="off" spellcheck="false"
+               placeholder="이름 · 초성 · 도감번호 (리자몽, ㄹㅈㅁ, 149)" aria-label="포켓몬 검색">
+        <button class="dex-clear" id="dex-clear" type="button" aria-label="검색어 지우기" hidden>✕</button>
+      </div>
+      <div class="dex-tools">
+        <button class="chip dex-shiny-chip" id="dex-shiny-only" type="button" aria-pressed="false">✨ 이로치만</button>
+        <span class="dex-count" id="dex-count"></span>
+      </div>
+    </div>
+
+    <div class="chip-row dex-type-row" id="dex-type-row" role="group" aria-label="타입 필터"></div>
+
+    <div class="dex-grid" id="dex-grid"></div>
+    <p class="dex-empty" id="dex-empty" hidden>조건에 맞는 포켓몬이 없어요. 이름·초성·도감번호로 다시 검색해 보세요.</p>
+    <div class="dex-more-wrap"><button class="dex-more" id="dex-more" type="button" hidden>더 보기</button></div>
+
+    <p class="fineprint">
+      종족값·기술·파트너 거리·진화 사탕은 pogoapi.net, 한국어 이름과 기술명은 PokeAPI 기준입니다.
+      최대 CP는 개체값 15/15/15 기준(50레벨 CPM 0.84029999)이고, 게임 업데이트로 수치가 바뀌면 게임 내 값이 우선합니다.
+      ⓔ 표시는 엘리트 기술(기술머신·이벤트 한정)입니다.
+    </p>
+  </section>
+
+  <!-- ══════════════════ 탭 4 : 육성 ══════════════════ -->
   <section class="tab-panel" id="tab-powerup" role="tabpanel" aria-labelledby="tabbtn-powerup" hidden>
 
     <article class="panel">
@@ -223,7 +255,7 @@
     </article>
   </section>
 
-  <!-- ══════════════════ 탭 4 : 가이드 ══════════════════ -->
+  <!-- ══════════════════ 탭 5 : 가이드 ══════════════════ -->
   <section class="tab-panel" id="tab-guide" role="tabpanel" aria-labelledby="tabbtn-guide" hidden>
 
     <article class="panel prose">
@@ -315,6 +347,23 @@
   <p class="footer-legal">© 2026 오박사의 포켓몬 백과사전. 일정·배율 정보는 참고용이며 게임 내 수치가 우선합니다.</p>
 </footer>
 
+<!-- ══════════════════ 도감 상세 시트 ══════════════════ -->
+<div class="dex-backdrop" id="dex-backdrop" hidden>
+  <div class="dex-sheet" role="dialog" aria-modal="true" aria-labelledby="dex-sheet-name">
+    <header class="dex-sheet-head">
+      <button class="icon-btn dex-nav" id="dex-prev" type="button" aria-label="이전 도감번호">‹</button>
+      <div class="dex-sheet-title">
+        <span class="dex-sheet-no" id="dex-sheet-no">#000</span>
+        <h2 id="dex-sheet-name">포켓몬</h2>
+        <span class="dex-sheet-en" id="dex-sheet-en"></span>
+      </div>
+      <button class="icon-btn dex-nav" id="dex-next" type="button" aria-label="다음 도감번호">›</button>
+      <button class="icon-btn" id="dex-close" type="button" aria-label="닫기">✕</button>
+    </header>
+    <div class="dex-sheet-body" id="dex-sheet-body"></div>
+  </div>
+</div>
+
 <!-- ══════════════════ 정책 모달 ══════════════════ -->
 <div class="modal-backdrop" id="modal-backdrop" hidden>
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
@@ -329,6 +378,7 @@
 <script src="data/types.js"></script>
 <script src="data/events.js"></script>
 <script src="data/raids.js"></script>
+<script src="data/pokedex.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

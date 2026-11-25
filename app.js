@@ -10,6 +10,8 @@
   var BOSSES = window.HUB_BOSSES || [];
   var COUNTERS = window.HUB_COUNTERS || {};
   var MAX_TIPS = window.HUB_MAX_TIPS || {};
+  var DEX = window.HUB_POKEDEX || [];
+  var DEX_MOVES = window.HUB_DEX_MOVES || [];
 
   var $ = function (sel, root) { return (root || document).querySelector(sel); };
   var $$ = function (sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); };
@@ -84,7 +86,7 @@
   }
 
   /* ─────────────── 탭 ─────────────── */
-  var TABS = ['events', 'raids', 'powerup', 'guide'];
+  var TABS = ['events', 'raids', 'pokedex', 'powerup', 'guide'];
 
   function switchTab(name, opts) {
     if (TABS.indexOf(name) < 0) name = 'events';
@@ -103,6 +105,7 @@
       if (history.replaceState) history.replaceState(null, '', '#' + name);
     }
     if (name === 'events') renderEvents();
+    if (name === 'pokedex') renderDex();
     if (name === 'powerup') updatePowerUp();
   }
 
@@ -126,6 +129,17 @@
   var eventFilter = 'all';
   var renderedEventIds = {};
 
+  /* 포켓몬이 주인공인 일정은 공식 일러스트를 아이콘으로 쓰고, 실패하면 기존 이모지로 돌아간다 */
+  function eventIconHTML(ev) {
+    var fallback = '<span class="event-emoji-fallback"' + (ev.pokemonId ? ' style="display:none"' : '') + '>' +
+      ev.emoji + '</span>';
+    if (!ev.pokemonId) return '<div class="event-emoji" aria-hidden="true">' + fallback + '</div>';
+    return '<div class="event-emoji has-mon" aria-hidden="true">' +
+      '<img src="' + dexArt(ev.pokemonId) + '" alt="" loading="lazy" ' +
+        'onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'block\';">' +
+      fallback + '</div>';
+  }
+
   function cardHTML(ev, now) {
     var st = eventState(ev, now);
     var s = parse(ev.start), e = parse(ev.end);
@@ -141,7 +155,7 @@
 
     return '' +
       '<article class="' + cardClass + '" data-event-id="' + ev.id + '">' +
-        '<div class="event-emoji" aria-hidden="true">' + ev.emoji + '</div>' +
+        eventIconHTML(ev) +
         '<div class="event-body">' +
           '<div class="event-top">' +
             '<span class="event-badge' + badgeClass + '">' + (ev.badge || '일정') + '</span>' +
@@ -674,6 +688,324 @@
       '<table><thead><tr><th>구간</th><th>모래</th><th>사탕</th><th>XL</th></tr></thead><tbody>' + rows + '</tbody></table>';
   }
 
+  /* ─────────────── 도감 탭 ─────────────── */
+  var ART_BASE = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/';
+
+  function dexArt(id, shiny) { return ART_BASE + (shiny ? 'shiny/' : '') + id + '.png'; }
+  function dexNo(id) { return '#' + (id < 1000 ? ('00' + id).slice(-3) : String(id)); }
+
+  var CPM40 = 0.7903001, CPM50 = 0.84029999;
+
+  /* 최대 CP (15/15/15) */
+  function maxCP(p, cpm) {
+    return Math.floor((p.a + 15) * Math.sqrt(p.d + 15) * Math.sqrt(p.s + 15) * cpm * cpm / 10);
+  }
+
+  /* 한글 초성 추출 — 초성 검색(ㄹㅈㅁ)용 */
+  var CHO = ['ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
+  function chosung(str) {
+    var out = '';
+    for (var i = 0; i < str.length; i++) {
+      var code = str.charCodeAt(i);
+      if (code >= 0xAC00 && code <= 0xD7A3) out += CHO[Math.floor((code - 0xAC00) / 588)];
+      else out += str.charAt(i);
+    }
+    return out;
+  }
+
+  var dexState = { q: '', type: 'all', shinyOnly: false, shown: 0, list: [], ready: false };
+  var DEX_CHUNK = 60;
+
+  function dexPrep() {
+    if (dexState.ready) return;
+    DEX.forEach(function (p) {
+      p._k = chosung(p.n);
+      p._e = String(p.e || '').toLowerCase();
+    });
+    dexState.ready = true;
+  }
+
+  function dexMatch(p, raw) {
+    var q = String(raw || '').trim().toLowerCase().replace(/\s+/g, '');
+    if (!q) return true;
+    var numq = q.replace(/^#/, '');
+    if (/^\d+$/.test(numq)) {
+      numq = numq.replace(/^0+(?=\d)/, '');
+      return String(p.id).indexOf(numq) === 0;
+    }
+    if (p.n.indexOf(q) >= 0 || p._e.indexOf(q) >= 0) return true;
+    /* 초성만 입력한 경우(ㄹㅈㅁ)는 이름 앞에서부터 맞춰 본다 */
+    return /^[ㄱ-ㅎ]+$/.test(q) && p._k.indexOf(q) === 0;
+  }
+
+  function dexFiltered() {
+    var q = dexState.q;
+    return DEX.filter(function (p) {
+      if (dexState.type !== 'all' && p.t.indexOf(dexState.type) < 0) return false;
+      if (dexState.shinyOnly && !p.sh) return false;
+      return dexMatch(p, q);
+    });
+  }
+
+  function dexTypeChip(t) {
+    return '<span class="type-chip" style="background:' + PGO.typeColor(t) + ';color:' + PGO.typeText(t) + '">' +
+      PGO.typeKo(t) + '</span>';
+  }
+
+  function dexCardHTML(p) {
+    var shiny = dexState.shinyOnly;
+    return '<button class="dex-card" type="button" data-dex="' + p.id + '" aria-label="' + p.n + ' 도감 상세">' +
+      '<span class="dex-no">' + dexNo(p.id) + '</span>' +
+      (p.sh ? '<span class="dex-shiny" title="이로치 출시">✨</span>' : '') +
+      '<span class="dex-thumb"><img src="' + dexArt(p.id, shiny) + '" alt="" loading="lazy" width="72" height="72" ' +
+        'onerror="this.onerror=null;this.src=\'' + dexArt(p.id, false) + '\';"></span>' +
+      '<span class="dex-name">' + p.n + '</span>' +
+      '<span class="dex-types">' + p.t.map(dexTypeChip).join('') + '</span>' +
+      '<span class="dex-cp">최대 CP ' + num(maxCP(p, CPM50)) + '</span>' +
+    '</button>';
+  }
+
+  function renderDex() {
+    if (!DEX.length) return;
+    dexPrep();
+    dexState.list = dexFiltered();
+    if (!dexState.shown) dexState.shown = DEX_CHUNK;
+    var total = dexState.list.length;
+    var slice = dexState.list.slice(0, dexState.shown);
+
+    $('#dex-grid').innerHTML = slice.map(dexCardHTML).join('');
+    $('#dex-empty').hidden = total > 0;
+    $('#dex-count').innerHTML = total
+      ? '<b>' + total.toLocaleString('ko-KR') + '</b>마리' +
+        (total > slice.length ? ' · ' + slice.length + '마리 보기' : '')
+      : '검색 결과 없음';
+    $('#dex-more').hidden = total <= slice.length;
+    $('#dex-clear').hidden = !dexState.q;
+  }
+
+  /* ── 도감 상세 시트 ── */
+  var dexSheet = { list: [], idx: 0, shiny: false };
+
+  function moveChips(ids, cls) {
+    if (!ids || !ids.length) return '';
+    return ids.map(function (i) {
+      return '<span class="move-chip ' + cls + '">' + (DEX_MOVES[i] || '?') + '</span>';
+    }).join('');
+  }
+
+  function eliteChips(ids, cls) {
+    if (!ids || !ids.length) return '';
+    return ids.map(function (i) {
+      return '<span class="move-chip ' + cls + '"><span class="elite">ⓔ</span>' + (DEX_MOVES[i] || '?') + '</span>';
+    }).join('');
+  }
+
+  function statRow(label, value, color) {
+    var pct = Math.max(4, Math.min(100, value / 300 * 100));
+    return '<div class="stat-row"><span class="s-label">' + label + '</span>' +
+      '<span class="stat-bar"><span style="width:' + pct.toFixed(1) + '%;background:' + color + '"></span></span>' +
+      '<span class="s-val">' + value + '</span></div>';
+  }
+
+  /* 배율 표기: 0.625 · 0.391 · 1.6 · 2.56 처럼 실제 배율값 그대로 */
+  function multText(m) { return String(Math.round(m * 1000) / 1000); }
+
+  function renderDexSheet() {
+    var p = dexSheet.list[dexSheet.idx];
+    if (!p) return;
+    $('#dex-sheet-no').textContent = dexNo(p.id);
+    $('#dex-sheet-name').textContent = p.n;
+    $('#dex-sheet-en').textContent = p.e;
+
+    var weak = PGO.weaknesses(p.t);
+    var resist = PGO.defenseTable(p.t).filter(function (r) { return r.mult < 0.99; });
+
+    var weakHTML = weak.length ? weak.map(function (w) {
+      return '<span class="weak-chip' + (w.mult > 2.5 ? ' is-double' : '') + '">' +
+        '<span class="type-chip" style="background:' + w.color + ';color:' + PGO.typeText(w.type) + '">' + w.ko + '</span>' +
+        '<b>×' + multText(w.mult) + '</b></span>';
+    }).join('') : '<p class="dex-none">약점이 없어요.</p>';
+
+    var resistHTML = resist.length ? resist.map(function (w) {
+      return '<span class="weak-chip">' +
+        '<span class="type-chip" style="background:' + w.color + ';color:' + PGO.typeText(w.type) + '">' + w.ko + '</span>' +
+        '<b>×' + multText(w.mult) + '</b></span>';
+    }).join('') : '<p class="dex-none">반감 타입이 없어요.</p>';
+
+    $('#dex-sheet-body').innerHTML =
+      '<div class="dex-hero">' +
+        '<div class="dex-art">' +
+          '<div class="dex-art-box"><img id="dex-art-img" src="' + dexArt(p.id, dexSheet.shiny) + '" alt="' + p.n + '"></div>' +
+          '<button class="dex-shiny-btn" id="dex-shiny-toggle" type="button" aria-pressed="' + (dexSheet.shiny ? 'true' : 'false') + '">' +
+            (dexSheet.shiny ? '✨ 이로치 보는 중' : '✨ 이로치 보기') + '</button>' +
+        '</div>' +
+        '<div class="dex-facts">' +
+          '<div class="type-row">' + p.t.map(dexTypeChip).join('') + '</div>' +
+          '<div class="stat-bars">' +
+            statRow('공격', p.a, '#EF4444') + statRow('방어', p.d, '#2563EB') + statRow('체력', p.s, '#10B981') +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="dex-cp-row">' +
+        '<div class="cp-card"><span class="cp-label">최대 CP · Lv.40</span><strong>' + num(maxCP(p, CPM40)) + '</strong></div>' +
+        '<div class="cp-card is-max"><span class="cp-label">최대 CP · Lv.50 (XL사탕)</span><strong>' + num(maxCP(p, CPM50)) + '</strong></div>' +
+      '</div>' +
+      '<div class="dex-mini">' +
+        '<div class="dex-mini-item"><span>파트너 사탕 거리</span><strong>' + (p.bd ? p.bd + ' km' : '-') + '</strong></div>' +
+        '<div class="dex-mini-item"><span>진화 사탕</span><strong>' + (p.ev ? p.ev + '개' : '진화 없음') + '</strong></div>' +
+        '<div class="dex-mini-item"><span>이로치</span><strong>' + (p.sh ? '출시 ✨' : '정보 없음') + '</strong></div>' +
+      '</div>' +
+      '<h4 class="dex-h">노말 기술</h4>' +
+      '<div class="dex-moves">' + (moveChips(p.f, 'is-fast') || '<p class="dex-none">정보 없음</p>') +
+        eliteChips(p.ef, 'is-fast') + '</div>' +
+      '<h4 class="dex-h">스페셜 기술 <span class="dex-h-sub">ⓔ = 엘리트 기술</span></h4>' +
+      '<div class="dex-moves">' + (moveChips(p.c, 'is-charged') || '<p class="dex-none">정보 없음</p>') +
+        eliteChips(p.ec, 'is-charged') + '</div>' +
+      '<h4 class="dex-h">약점 <span class="dex-h-sub">받는 데미지 배율</span></h4>' +
+      '<div class="weak-row">' + weakHTML + '</div>' +
+      '<h4 class="dex-h">반감 · 무효</h4>' +
+      '<div class="weak-row">' + resistHTML + '</div>';
+
+    var img = $('#dex-art-img');
+    if (img) img.addEventListener('error', function () {
+      if (dexSheet.shiny) {
+        dexSheet.shiny = false;
+        img.src = dexArt(p.id, false);
+        var btn = $('#dex-shiny-toggle');
+        if (btn) { btn.setAttribute('aria-pressed', 'false'); btn.textContent = '이로치 이미지 없음'; }
+      }
+    });
+  }
+
+  function openDex(id) {
+    dexPrep();
+    var list = dexState.list.length ? dexState.list : DEX;
+    var idx = -1;
+    for (var i = 0; i < list.length; i++) { if (list[i].id === id) { idx = i; break; } }
+    if (idx < 0) {
+      list = DEX;
+      for (var j = 0; j < list.length; j++) { if (list[j].id === id) { idx = j; break; } }
+    }
+    if (idx < 0) return;
+    dexSheet.list = list;
+    dexSheet.idx = idx;
+    dexSheet.shiny = false;
+    renderDexSheet();
+    $('#dex-backdrop').hidden = false;
+    document.body.style.overflow = 'hidden';
+    var body = $('#dex-sheet-body');
+    $('#dex-close').focus();
+  }
+
+  function closeDex() {
+    $('#dex-backdrop').hidden = true;
+    document.body.style.overflow = '';
+  }
+
+  function stepDex(dir) {
+    var n = dexSheet.list.length;
+    if (!n) return;
+    dexSheet.idx = (dexSheet.idx + dir + n) % n;
+    dexSheet.shiny = false;
+    renderDexSheet();
+    $('#dex-sheet-body').scrollTop = 0;
+  }
+
+  function initDex() {
+    if (!DEX.length) return;
+    dexPrep();
+
+    var row = $('#dex-type-row');
+    if (row) {
+      row.innerHTML = '<button class="chip dex-type-chip is-active" type="button" data-dex-type="all">전체 타입</button>' +
+        PGO.TYPES.map(function (t) {
+          return '<button class="chip dex-type-chip" type="button" data-dex-type="' + t.id + '">' + t.ko + '</button>';
+        }).join('');
+      row.addEventListener('click', function (e) {
+        var chip = e.target.closest('.dex-type-chip');
+        if (!chip) return;
+        var type = chip.getAttribute('data-dex-type');
+        $$('.dex-type-chip', row).forEach(function (c) {
+          c.classList.remove('is-active');
+          c.style.background = ''; c.style.color = ''; c.style.borderColor = '';
+        });
+        chip.classList.add('is-active');
+        if (type !== 'all') {
+          chip.style.background = PGO.typeColor(type);
+          chip.style.borderColor = PGO.typeColor(type);
+          chip.style.color = PGO.typeText(type);
+        }
+        dexState.type = type;
+        dexState.shown = DEX_CHUNK;
+        renderDex();
+      });
+    }
+
+    var q = $('#dex-q');
+    if (q) {
+      q.addEventListener('input', function () {
+        dexState.q = q.value;
+        dexState.shown = DEX_CHUNK;
+        renderDex();
+      });
+    }
+
+    var clear = $('#dex-clear');
+    if (clear) clear.addEventListener('click', function () {
+      if (q) { q.value = ''; q.focus(); }
+      dexState.q = '';
+      dexState.shown = DEX_CHUNK;
+      renderDex();
+    });
+
+    var shinyBtn = $('#dex-shiny-only');
+    if (shinyBtn) shinyBtn.addEventListener('click', function () {
+      dexState.shinyOnly = !dexState.shinyOnly;
+      shinyBtn.setAttribute('aria-pressed', dexState.shinyOnly ? 'true' : 'false');
+      dexState.shown = DEX_CHUNK;
+      renderDex();
+    });
+
+    var more = $('#dex-more');
+    if (more) more.addEventListener('click', function () {
+      dexState.shown += DEX_CHUNK * 2;
+      renderDex();
+    });
+
+    var grid = $('#dex-grid');
+    if (grid) grid.addEventListener('click', function (e) {
+      var card = e.target.closest('.dex-card');
+      if (card) openDex(Number(card.getAttribute('data-dex')));
+    });
+
+    $('#dex-close').addEventListener('click', closeDex);
+    $('#dex-prev').addEventListener('click', function () { stepDex(-1); });
+    $('#dex-next').addEventListener('click', function () { stepDex(1); });
+    $('#dex-backdrop').addEventListener('click', function (e) {
+      if (e.target === $('#dex-backdrop')) closeDex();
+    });
+    $('#dex-sheet-body').addEventListener('click', function (e) {
+      if (e.target.closest('#dex-shiny-toggle')) {
+        dexSheet.shiny = !dexSheet.shiny;
+        var p = dexSheet.list[dexSheet.idx];
+        var btn = $('#dex-shiny-toggle');
+        var image = $('#dex-art-img');
+        if (!p || !btn || !image) return;
+        btn.setAttribute('aria-pressed', dexSheet.shiny ? 'true' : 'false');
+        btn.textContent = dexSheet.shiny ? '✨ 이로치 보는 중' : '✨ 이로치 보기';
+        image.src = dexArt(p.id, dexSheet.shiny);
+      }
+    });
+    document.addEventListener('keydown', function (e) {
+      if ($('#dex-backdrop').hidden) return;
+      if (e.key === 'Escape') closeDex();
+      else if (e.key === 'ArrowRight') stepDex(1);
+      else if (e.key === 'ArrowLeft') stepDex(-1);
+    });
+
+    renderDex();
+  }
+
   /* ─────────────── 모달 ─────────────── */
   var MODALS = {
     privacy: {
@@ -810,6 +1142,7 @@
     initBossGrid();
     initTypeCalc();
     initPowerUp();
+    initDex();
     initModals();
     initShare();
 
@@ -858,6 +1191,10 @@
     selectBoss: selectBoss,
     switchTab: switchTab,
     events: EVENTS,
-    bosses: BOSSES
+    bosses: BOSSES,
+    dex: DEX,
+    maxCP: function (id) { var p = DEX.filter(function (x) { return x.id === id; })[0]; return p ? { lv40: maxCP(p, CPM40), lv50: maxCP(p, CPM50) } : null; },
+    openDex: openDex,
+    closeDex: closeDex
   };
 })();
