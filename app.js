@@ -1140,6 +1140,19 @@
     });
   }
 
+  /* ─────────────── 제휴 배너 (쿠팡 파트너스 · 겜스고) ───────────────
+     이동은 링크 기본 동작에 맡기고, 클릭만 GA4 partner_click 으로 남긴다. */
+  function initPromoBanners() {
+    $$('a.promo[data-partner]').forEach(function (link) {
+      link.addEventListener('click', function () {
+        track('partner_click', {
+          partner: link.getAttribute('data-partner'),
+          slot: link.getAttribute('data-slot') || ''
+        });
+      });
+    });
+  }
+
   var toastTimer = null;
   function toast(msg) {
     var el = $('#toast');
@@ -1168,6 +1181,7 @@
     initDex();
     initModals();
     initShare();
+    initPromoBanners();
 
     var hash = (location.hash || '').replace('#', '');
     switchTab(TABS.indexOf(hash) >= 0 ? hash : 'events', { silent: true });

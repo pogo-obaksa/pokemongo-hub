@@ -16,7 +16,7 @@ web/pokemongo-hub/
 │   ├── raids.js          # 레이드 보스 · 추천 카운터 · 기술 데이터
 │   └── pokedex.js        # 한글 도감 데이터 1,024종 (자동 생성 파일)
 ├── tools/build_pokedex.py # 도감 데이터 생성 스크립트 (pogoapi.net + PokeAPI → data/pokedex.js)
-├── tests/verify.py       # headless chromium 자동 검증(로직 + 폰트·테마 + 도감 + 스크린샷)
+├── tests/verify.py       # headless chromium 자동 검증(로직 + 폰트·테마 + 도감 + 제휴 배너 + 스크린샷)
 ├── preview_mobile.png    # 390×844 미리보기
 ├── preview_desktop.png   # 1280×800 미리보기
 ├── robots.txt
@@ -88,12 +88,31 @@ git push -u origin main
 ```
 저장소 → **Settings → Pages → Source: Deploy from a branch → main / (root)** 선택.
 
-## 애드센스 붙이기
+## 제휴 배너 (쿠팡 파트너스 · 겜스고)
 
-1. `index.html`에서 `<!-- 애드센스 광고 영역 -->` 주석 4곳(일정 상단·카운터·가이드 중간·가이드 하단)을 찾습니다.
-2. `<head>`에 애드센스 스크립트를 넣고, 각 `ad-slot` 안의 `<span>광고 영역</span>` 을 `<ins class="adsbygoogle">` 코드로 교체합니다.
-3. `ads.txt`에 발급받은 `google.com, pub-XXXXXXXX, DIRECT, f08c47fec0942fa0` 한 줄을 넣습니다.
-4. 심사 전 확인: `개인정보처리방침`(모달에 구현됨) · `이용약관` · `문의` 페이지가 실제로 열려야 하고,
+광고 자리 4곳은 애드센스 플레이스홀더 대신 **실제 제휴 배너 카드**로 채워져 있습니다.
+위치·순서는 `index.html`의 `div.promo-slot` 4곳이며, 쿠팡 ↔ 겜스고를 교차 배치했습니다.
+
+| 슬롯(`data-slot`) | 위치 | 제휴사 |
+|---|---|---|
+| `events-top` | 일정 탭 · 필터 칩 아래 | 쿠팡 파트너스 |
+| `raids-bottom` | 카운터 탭 · 보스 패널 아래 | 겜스고 |
+| `guide-mid` | 가이드 본문 중간 | 쿠팡 파트너스 |
+| `guide-bottom` | 가이드 본문 하단 | 겜스고 |
+
+- 링크: 쿠팡 파트너스 `https://link.coupang.com/a/iYJYCkpdYW` (포고플 포켓몬고 오토캐치 상품) · 겜스고 `https://www.gamsgo.com/partner/cYpzj`
+- 모든 제휴 링크는 `target="_blank" rel="noopener noreferrer sponsored"` 를 유지합니다.
+- 클릭은 GA4(`G-HXJPTGF30R`) `partner_click` 이벤트로 기록됩니다 — `{ partner: 'coupang'|'gamsgo', slot: '…' }`
+  (배너 `a` 의 `data-partner` / `data-slot` 값을 그대로 씁니다. 배너를 추가·교체하면 이 두 속성만 맞춰 주세요.)
+- **쿠팡 파트너스 고지 문구**(`.promo-note`)는 쿠팡 배너마다 반드시 남겨야 합니다:
+  `이 배너는 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.`
+- 문구·이미지는 외부 이미지 요청 없이 CSS·텍스트만 씁니다(로드 실패·겹침 위험 없음, 라이트 테마 유지).
+
+## 애드센스 붙이기 (추후)
+
+1. 애드센스를 함께 쓰려면 `index.html`에 남는 자리를 새로 만들어 `<ins class="adsbygoogle">` 코드를 넣습니다.
+2. `ads.txt`에 발급받은 `google.com, pub-XXXXXXXX, DIRECT, f08c47fec0942fa0` 한 줄을 넣습니다.
+3. 심사 전 확인: `개인정보처리방침`(모달에 구현됨) · `이용약관` · `문의` 페이지가 실제로 열려야 하고,
    **문의처는 실제 연락 가능한 주소로 바꿔 주세요**(현재는 블로그·인스타 채널로 안내).
 
 ## 검증
@@ -105,7 +124,8 @@ python3 tests/verify.py
 
 - 타입 배율(2.56 / 1.6 / 0.625 / 0.391), 육성 비용(1→40 = 모래 270,000·사탕 302 / 40→50 = 모래 290,000·XL 296),
   KST 변환·카운트다운, 보스별 약점·카운터, 도감 검색(리자몽·피카·ㄹㅈㅁ·149·#006)·타입/이로치 필터·상세 시트·이로치 토글,
-  5개 탭 렌더, 일정 카드 포켓몬 일러스트, 모바일/데스크톱 가로 넘침, Pretendard 웹폰트 로드와 라이트 테마 기본값까지 자동 검사합니다.
+  5개 탭 렌더, 일정 카드 포켓몬 일러스트, 제휴 배너 4곳(링크·rel·고지 문구·`partner_click`),
+  모바일/데스크톱 가로 넘침, Pretendard 웹폰트 로드와 라이트 테마 기본값까지 자동 검사합니다.
 
 ```bash
 # 이 환경에서 chromium 이 libnspr4 를 못 찾을 때

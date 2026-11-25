@@ -353,6 +353,44 @@ main{
   color:#7A8797;font-size:11px;font-weight:700;letter-spacing:.14em;
 }
 
+/* ─────────── 제휴 배너 (쿠팡 파트너스 · 겜스고) ─────────── */
+.promo-slot{max-width:760px;margin:18px auto;}
+.promo{
+  display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:12px;
+  padding:13px 14px;border-radius:var(--radius);background:#FFFFFF;
+  border:1px solid var(--line-strong);box-shadow:var(--shadow-sm);
+  text-decoration:none;color:inherit;
+  transition:transform .15s,box-shadow .15s,border-color .15s;
+}
+.promo:hover{transform:translateY(-1px);box-shadow:0 10px 22px rgba(15,23,42,.10);border-color:#BFD7EA;}
+.promo:focus-visible{
+  outline:none;border-color:#93C5FD;
+  box-shadow:0 0 0 3px rgba(37,99,235,.25),0 10px 22px rgba(15,23,42,.10);
+}
+.promo-mark{
+  width:46px;height:46px;border-radius:14px;display:grid;place-items:center;
+  color:#FFFFFF;font-size:11.5px;font-weight:800;letter-spacing:-.03em;line-height:1;
+  box-shadow:0 3px 8px rgba(15,23,42,.14);
+}
+.promo--coupang .promo-mark{background:linear-gradient(140deg,#FF6A4D,#DE1F26);}
+.promo--gamsgo .promo-mark{background:linear-gradient(140deg,#8B5CF6,#2563EB);}
+.promo-main{display:flex;flex-direction:column;gap:2px;min-width:0;word-break:keep-all;overflow-wrap:anywhere;}
+.promo-eyebrow{font-size:10px;font-weight:800;letter-spacing:.08em;color:#7A8797;}
+.promo-title{font-size:14px;font-weight:800;color:#0F172A;letter-spacing:-.015em;line-height:1.36;}
+.promo-desc{font-size:12.5px;color:var(--muted);line-height:1.45;}
+.promo-cta{
+  flex:0 0 auto;display:inline-flex;align-items:center;gap:5px;
+  padding:8px 13px;border-radius:999px;font-size:12px;font-weight:800;white-space:nowrap;
+}
+.promo--coupang .promo-cta{background:#FFF0EE;color:#C81E24;}
+.promo--gamsgo .promo-cta{background:#EEF0FF;color:#4338CA;}
+.promo-arrow{font-size:12px;transform:translateY(-.5px);}
+.promo-note{margin:6px 2px 0;font-size:10.5px;line-height:1.5;color:#8A96A5;letter-spacing:-.005em;}
+@media(max-width:560px){
+  .promo{grid-template-columns:auto minmax(0,1fr);row-gap:10px;padding:12px 13px;}
+  .promo-cta{grid-column:2;justify-self:start;padding:7px 12px;}
+}
+
 /* ─────────── boss picker ─────────── */
 .boss-grid{
   display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
